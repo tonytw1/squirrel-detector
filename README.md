@@ -84,9 +84,6 @@ detection_multiclass_scores
 detection_classes
 num_detections
 detection_boxes
-
-
-
 detection_scores
 detection_classes
 
@@ -95,8 +92,24 @@ maxes:
 0.692303538
 88.0
 
+Looking at the first 3 elements of these lists:
+```
+0.692303538
+0.335249633
+0.320963889
+17.0
+44.0
+16.0
+```
 
-COCO model doesn't know about squirrels!
+This looks like a 69% confidences for a detection of a `17`
+
+The detection_class is from `mscoco_label_map.pbtxt`
+There are only 80 unique ids in the file. 17 is `cat`
+
+So, it looks like the COCO model doesn't know about squirrels!
+
+
 
 
 MQTT from python requires:
