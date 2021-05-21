@@ -1,23 +1,33 @@
 ## Detecting motion and capturing images
 
-Motion does a good job of detecting movement and creating bounding boxes.
+Motion does a good job of detecting movement and creating image files and bounding boxes.
 
-Let's use a python script to catch this event and publish the image and event data.
+We'd like Motion to detect bounding boxes but not draw them on the saved image files.
+This configuration line seems todo this:
+```
+locate_motion_mode preview
+```
 
-`on_motion_detected.py`
+Let's use a python script to catch these events and publish them.
 
-This script needs capture the image file path and the bounding box from Motion 
-and encode them into a message.
+This script needs to capture the image file path and the bounding box from Motion and encode them into a message.
 
 The Motion `on_picture_save` event is able to give us the image file path and bounding box.
 We can hook these together with this configuration line:
 
-`on_picture_save python /home/pi/on_motion_detected.py %f %w %h %K %L %i %J`
+`on_picture_save python3 /home/pi/on_motion_detected.py %f %w %h %K %L %i %J`
 
-We want to open the binary image file and encode it for inclution in a message.
-base64 encoding should be enough.
+Our camera is connected to a small device with limited processing capability.
+We want to send the image somewhere where a more capable machine can look at it.
 
-We'll use an MQTT topic to get these message out of the camera device.
+We'll need to encode the image file for inclution in a message.
+Base64 encoding should be enough.
+
+We'll use MQTT as the message format. MQTT is really practical about message sizes limits.
+We can publish the motion messages to a MQTT topic which other machines can subscribe to.
+
+This happens in this script:
+`on_motion_detected.py`
 
 
 ## Detecting objects
