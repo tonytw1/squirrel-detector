@@ -41,19 +41,35 @@ The results from the classification can be republished into another MQTT topic.
 
 ## Object detection APIs
 
+### Google Vision
+
 Google Vision is probably the gold standard for object detection and it has a nice python API.
 It seems to know all about squirrels as well.
 Here's a script to detect objects an image file and it's sample output.
 
 ![Google Vision output](google_vision.png)
 
-The free tier for this API isn't suited for continuous use. Is there anything we can run locally?
+### Local alternatives?
+
+The free tier for Google Vision isn't suited for continuous use.
+Is there anything we can run locally?
+
 Pretrained TensorFlow object detection models are available and running one locally might be an interesting side quest.
 
-This model will need to be wrapped in a API so we can call it from our message handling script.
+There are 2 interesting problems here. Can we find a model which can detect the objects we're interested in and
+can we easily run it and call it locally.
+
+The model will need to be wrapped in some sort of API so we can call it from our message handling script.
 
 
-## Local object detection API with TensorFlow Serving
+
+## TensorFlow object detection models
+
+
+
+
+
+## Running a model with TensorFlow Serving
 
 "TensorFlow Serving makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs"
 
