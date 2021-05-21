@@ -1,6 +1,15 @@
-## Detecting motion and capturing images
+## Hardware
 
-Motion does a good job of detecting movement and creating image files and bounding boxes.
+We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/) with the
+[Camera Module V2](https://www.raspberrypi.org/products/camera-module-v2/).
+
+This gives us Wifi, 1 core and 512Mb of memory.
+
+
+## Detecting motion and capturing images
+[Motion](https://motion-project.github.io) is packaged for the Raspberry Pi.
+It does a good job of detecting movement and creating image files and bounding boxes.
+
 
 We'd like Motion to detect bounding boxes but not draw them on the saved image files.
 This configuration line seems todo this:
