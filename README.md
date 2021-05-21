@@ -115,10 +115,42 @@ The prediction returns a large map of results.
 ![Prediction results](predictions.png)
 
 
-Mention the labels.
+`detection_classes` and `detection_scores` are interesting.
+This turns out to mean a 73% confidence of a class 17 object.
 
+What are the classes and why are the values all below 100?
+The saved model was trained on the COCO image set.
+It was only traught about 80 unique objects and the classe id's refer to one of them.
 
+The detection_class labels are available in the file `mscoco_label_map.pbtxt`
+
+```
+item {
+  name: "/m/015qbp"
+  id: 14
+  display_name: "parking meter"
+}
+item {
+  name: "/m/01yrx"
+  id: 17
+  display_name: "cat"
+}
+item {
+  name: "/m/04dr76w"
+  id: 44
+  display_name: "bottle"
+}
+```
+
+### Not cat
+
+Plotting the most confident prediction over the image:
 ![Not cat](not_cat.png)
+
+Looking up class 17 in the label file we find `cat`.
+
+It looks like the model doesn't know about squirrels!
+Squirrels are not one of the classes this model was trained on.
 
 
 
@@ -148,56 +180,5 @@ http://localhost:8501/v1/models/ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8
     ]
 }
 ```
-
-
-Returns a 70Mb block of JSON which we can start picking through
-
-```
-{'predictions': [{'detection_classes': [17.0, 44.0, 16.0, 9.0, 47.0, 64.0, 64.0, ...
-```
-
-
-raw_detection_boxes
-detection_scores
-raw_detection_scores
-detection_anchor_indices
-detection_multiclass_scores
-detection_classes
-num_detections
-detection_boxes
-detection_scores
-detection_classes
-
-both have length = num_detections
-maxes:
-0.692303538
-88.0
-
-Looking at the first 3 elements of these lists:
-```
-0.692303538
-0.335249633
-0.320963889
-17.0
-44.0
-16.0
-```
-
-This looks like a 69% confidences for a detection of a `17`
-
-The detection_class is from `mscoco_label_map.pbtxt`
-There are only 80 unique ids in the file. 17 is `cat`
-
-So, it looks like the COCO model doesn't know about squirrels!
-
-
-
-
-MQTT from python requires:
-
-```
-pip3 install paho-mqtt
-```
-
 
 
