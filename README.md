@@ -152,8 +152,11 @@ Looking up class 17 in the label file we find `cat`.
 It looks like the model doesn't know about squirrels!
 Squirrels are not one of the classes this model was trained on.
 
+### Local detection script
+
 Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
 This is `detect.py`. There is plentt in there which I don't yet understand.
+
 
 ## Running a model with TensorFlow Serving
 
