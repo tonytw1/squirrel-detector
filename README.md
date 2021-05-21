@@ -112,7 +112,7 @@ Requesting a prediction.
 
 The prediction returns a large map of results.
 
-![Prediction results](predict.png)
+![Prediction results](predictions.png)
 
 
 Mention the labels.
