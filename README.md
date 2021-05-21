@@ -32,7 +32,7 @@ We can hook these together with this configuration line:
 Our camera is connected to a small device with limited processing capability.
 We want to send the image somewhere where a more capable machine can look at it.
 
-We'll need to encode the image file for inclution in a message.
+We'll need to encode the image file for inclusion in a message.
 Base64 encoding should be enough.
 
 We'll use MQTT as the message format. MQTT is really practical about message sizes limits.
