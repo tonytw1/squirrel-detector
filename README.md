@@ -5,6 +5,12 @@ We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspber
 
 This gives us Wifi, 1 core and 512Mb of memory.
 
+The camera module appears as a Video4Linux device.
+You can see device details with this command:
+```
+v4l2-ctl --all
+```
+
 
 ## Detecting motion and capturing images
 [Motion](https://motion-project.github.io) is available as a Raspberry Pi package.
