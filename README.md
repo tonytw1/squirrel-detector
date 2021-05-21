@@ -53,13 +53,18 @@ The results from the classification can be republished into another MQTT topic.
 
 ## Object detection APIs
 
+How are we going to classify the moving objects Motion has detected?
+We'll like to pass the area of interest to an object detection API.
+
+
 ### Google Vision
 
-Google Vision is probably the gold standard for object detection and it has a nice python API.
+Google Vision is probably the gold standard for object detection and has a nice python API.
 It seems to know all about squirrels as well.
 Here's a script to detect objects an image file and it's sample output.
 
 ![Google Vision output](google_vision.png)
+
 
 ### Local alternatives?
 
