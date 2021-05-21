@@ -88,7 +88,37 @@ The model will need to be wrapped in some sort of API so we can call it from our
 
 ## TensorFlow object detection models
 
+Saved models have been trained and can be downloaded and used to run predictions against our images.
+So lets pick a model from the Model Zoo and try to run it against one of our test images.
 
+Working on a local machine I was blocked almost immediately with an error trying to use the loaded model.
+This could be a mismatch between TensorFlow 2.5 and the available examples.models
+
+Retreating to Google Colab notebooks offers known good develeopment envirioment.
+Interesting the same problem persisted in Colab. Reverting from TensorFlow2 model to a TensorFlow1 model resolved it.
+
+Alot of data development work goes in in notebook environments like Jupyter. The data community have discovered a really
+interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.TensorFlow
+
+### Testing a saved model in Colab
+
+With a saved model imported into our Colab notebook we can load one of test images and ask the model to predict the visible objects.
+
+![Colan perdiction](colab.png)
+
+Requesting a prediction.
+
+![Model predict](predict.png)
+
+The prediction returns a large map of results.
+
+![Prediction results](predict.png)
+
+
+Mention the labels.
+
+
+![Not cat](not_cat.png)
 
 
 
