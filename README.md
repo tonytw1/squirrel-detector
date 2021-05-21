@@ -44,7 +44,7 @@ This happens in this script:
 
 ## Detecting objects
 
-We have a message containing a still image with a bounding box enclosing an area of motion.
+We now have a message containing a still image with a bounding box enclosing an area of motion.
 We want to phrase this and maybe crop to the bounding box.
 
 We can then send the image to an object detection API.
