@@ -45,7 +45,7 @@ Google Vision is probably the gold standard for object detection and it has a ni
 It seems to know all about squirrels as well.
 Here's a script to detect objects an image file and it's sample output.
 
-![Google Vision output][google_vision.png]
+![Google Vision output](google_vision.png)
 
 The free tier for this API isn't suited for continuous use. Is there anything we can run locally?
 Pretrained TensorFlow object detection models are available and running one locally might be an interesting side quest.
