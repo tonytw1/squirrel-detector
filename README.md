@@ -7,8 +7,11 @@ This gives us Wifi, 1 core and 512Mb of memory.
 
 
 ## Detecting motion and capturing images
-[Motion](https://motion-project.github.io) is packaged for the Raspberry Pi.
+[Motion](https://motion-project.github.io) is available as a Raspberry Pi package.
 It does a good job of detecting movement and creating image files and bounding boxes.
+
+Here's an example of Motion detecting and bounding a movement:
+![This is not a squirrel](images/not_squirrel.jpg)
 
 
 We'd like Motion to detect bounding boxes but not draw them on the saved image files.
