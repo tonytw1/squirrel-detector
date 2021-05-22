@@ -170,9 +170,15 @@ Let's move onto productionising what we have on the assumption we'll be able to 
 
 This looks exactly what we want. A way to deploy a saved model behind a REST API.
 
-A Docker container is provided. We need to start it up with our saved model imported.
+A Docker container is provided. 
+We use this as a base image to produce an image with our model baked into it.
+`Dockerfile`
 
-Checking for available models at `http://localhost:8501/v1/models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8`
+`
+docker run -p 8501:8501 -e MODEL_NAME=ssd_mobilenet_v2_320x320_coco17_tpu-8 eelpie/tensorflowserving
+`
+
+Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_v2_320x320_coco17_tpu-8`
 
 ```
 {
@@ -188,6 +194,12 @@ Checking for available models at `http://localhost:8501/v1/models/ssd_mobilenet_
     ]
 }
 ```
+
+Now we can ask for a predicition with an HTTP call rather than importing the TensorFlow model into the script
+
+`
+detect_rest.py
+`
 
 
 
