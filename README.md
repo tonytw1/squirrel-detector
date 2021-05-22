@@ -155,20 +155,24 @@ Squirrels are not one of the classes this model was trained on.
 ### Local detection script
 
 Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
-This is `detect.py`. There is plentt in there which I don't yet understand.
+This is `detect.py`. There is plenty in there which I don't yet understand.
+
+We've now verified that we can use TensorFlow to run a pretrained model locally.
+That pretrained model doesn't know about the specific animals we're interested in but can probably be retrained.
+
+Let's move onto productionising what we have on the assumption we'll be able to improve the model with training.
+
 
 
 ## Running a model with TensorFlow Serving
 
-"TensorFlow Serving makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs"
+"[https://www.tensorflow.org/tfx/serving/docker](TensorFlow Serving) makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs"
 
-So lets use this to setup a local object detection service.
+This looks exactly what we want. A way to deploy a saved model behind a REST API.
 
-https://www.tensorflow.org/tfx/serving/docker
+A Docker container is provided. We need to start it up with our saved model imported.
 
-
-Checking for available models
-http://localhost:8501/v1/models/ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8
+Checking for available models at `http://localhost:8501/v1/models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8`
 
 ```
 {
@@ -184,5 +188,8 @@ http://localhost:8501/v1/models/ssd_mobilenet_v1_fpn_640x640_coco17_tpu-8
     ]
 }
 ```
+
+
+
 
 
