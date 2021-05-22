@@ -85,20 +85,20 @@ can we easily run it and call it locally.
 The model will need to be wrapped in some sort of API so we can call it from our message handling script.
 
 
-
 ## TensorFlow object detection models
 
-Saved models have been trained and can be downloaded and used to run predictions against our images.
-So lets pick a model from the Model Zoo and try to run it against one of our test images.
+Saved models have been pretrained and can be downloaded and used to run predictions against our images.
+
+Lets pick a model from the [TensorFlow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) and try to run it against one of our test images.
 
 Working on a local machine I was blocked almost immediately with an error trying to use the loaded model.
-This could be a mismatch between TensorFlow 2.5 and the available examples.models
+This could be a mismatch between TensorFlow 2.5 and the available examples.
 
 Retreating to Google Colab notebooks offers a known good development environment.
-The same problem persisted in Colab. Reverting from a TensorFlow2 model to a TensorFlow1 model resolved it.
 
 Alot of data development work goes in in notebook environments like Jupyter. The data community have discovered a really
 interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
+
 
 ### Testing a saved model in Colab
 
@@ -147,7 +147,7 @@ item {
 Plotting the most confident prediction over the image:
 ![Not cat](not_cat.png)
 
-Looking up class 17 in the label file we find `cat`.
+Looking up class 17 in the  label file we find `cat`.
 
 It looks like the model doesn't know about squirrels!
 Squirrels are not one of the classes this model was trained on.
