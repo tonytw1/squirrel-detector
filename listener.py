@@ -44,16 +44,15 @@ def on_message(client, userdata, msg):
     predictions = predict(image)
 
     print("Got predicitions: ")
-    num = len(predictions)
-    print(num)
-
-    prediction = predictions[0];
-    num = len(prediction)
-    detection_scores = prediction['detection_scores'];
+    prediction = predictions[0]
+    detection_scores = prediction['detection_scores']
     detection_classes = prediction['detection_classes']
-    print(num)
-    for i in range(num):
-        print(str(i) + ": " + str(detection_classes[i]) + ": " + str(detection_scores[i]))
+
+    # Merge detection class with scores
+    detected_classes = numpy.array(list(zip(detection_classes, detection_scores)))
+    top = detected_classes[0:5]
+    for i in range(len(top)):
+        print(str(top[i][0]) + ": " + str(top[i][1]))
 
 client = mqtt.Client()
 client.on_connect = on_connect
