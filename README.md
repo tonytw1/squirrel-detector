@@ -174,6 +174,9 @@ A Docker container is provided.
 We use this as a base image to produce an image with our model baked into it.
 `Dockerfile`
 
+
+Testing locally:
+
 `
 docker run -p 8501:8501 -e MODEL_NAME=ssd_mobilenet_v2_320x320_coco17_tpu-8 eelpie/tensorflowserving
 `
@@ -195,11 +198,24 @@ Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_
 }
 ```
 
+
+
+
 Now we can ask for a predicition with an HTTP call rather than importing the TensorFlow model into the script
 
 `
 detect_rest.py
 `
+
+
+
+### Hooking it all together
+
+We can now write a script which will listen for the motion messages and call the TensowFlow model for object detections.
+
+`listener.py'
+
+
 
 
 
