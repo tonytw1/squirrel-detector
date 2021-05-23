@@ -29,5 +29,7 @@ if num_argv >=4:
 			message['bounding_box_width'] = sys.argv[6]
 			message['bounding_box_height'] = sys.argv[7]
 
-		# Publish to mqtt topic in json format
-		subprocess.run(['mosquitto_pub', '-t', 'motion', '-m', json.dumps(message)])
+		# Publish to mqtt topic in json format. Stream the message through stdin to avoid argument size limits
+		mosquitto = subprocess.Popen(['mosquitto_pub', '-s', '-t', 'motion'], stdin=subprocess.PIPE)
+		mosquitto.stdin.write(str.encode(json.dumps(message)))
+		mosquitto.stdin.close()
