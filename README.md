@@ -221,3 +221,22 @@ We can now write a script which will listen for the motion messages and call the
 
 
 
+## Retraining
+
+### Collecting training data
+
+Unlike humans animals won't generally give out personally identifying informational for free.
+They will trade it for nuts though.
+
+
+Collecting several day's images gave a collection of several hundred training images with examples of most of the garden animals.
+
+
+
+### Annotating images
+
+[VoTT (Visual Object Tagging Tool)](https://github.com/microsoft/VoTT) 
+
+230 in 30 minutes. This was much quicker than expected and a somewhat cathartic.
+
+
