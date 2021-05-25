@@ -278,4 +278,22 @@ Check points can be used to port pause and resume training.
 They can also be used to resume training on a faster GPU enabled cloud instance.
 
 
+### To the Cloud
+
+Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
+we can apply all of the setup
+steps we worked out in the `retrain/Dockerfile`
+
+
+![CGoogle Cloud GPU](google-cloud-gpu.png)
+
+
+Google Cloud 
+Tesla K80
+
+
+
+We can create a machine image of the setup instance for a faster restart next time.
+
+
 
