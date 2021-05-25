@@ -297,5 +297,10 @@ Google Cloud
 Tesla K80
 
 
+```
+I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step time 0.734s loss=737993.750
+```
+
+
 
 
