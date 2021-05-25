@@ -54,7 +54,7 @@ This happens in this script:
 
 It quickly became apparent that there was more than squirriels going on in the garden.
 
-![Not squirrel](fox.png)
+![Not squirrel](images/fox.jpg)
 
 This is not a squirrel.
 
