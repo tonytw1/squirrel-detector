@@ -48,12 +48,25 @@ This happens in this script:
 `on_motion_detected.py`
 
 
+
+
 ## Detecting objects
 
-We now have a message containing a still image with a bounding box enclosing an area of motion.
-We want to phrase this and maybe crop to the bounding box.
+It quickly became apparent that there was more than squirriels going on in the garden.
 
+![Not squirrel](fox.png)
+
+This is not a squirrel.
+
+We're going to want to categorise the objects in the motion messages to filter for squirriels.
+
+
+We have a message containing a still image with a bounding box enclosing an area of motion.
+We're going to want to categorise the objects to filter for squirriels.
+
+We want to phrase this and maybe crop to the bounding box.
 We can then send the image to an object detection API.
+
 The results from the classification can be republished into another MQTT topic.
 
 
