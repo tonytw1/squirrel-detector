@@ -50,7 +50,7 @@ This happens in this script:
 
 
 
-## Detecting objects
+## Not squirrel
 
 It quickly became apparent that there was more than squirriels going on in the garden.
 
