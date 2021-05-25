@@ -281,19 +281,21 @@ They can also be used to resume training on a faster GPU enabled cloud instance.
 ### To the Cloud
 
 Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
-we can apply all of the setup
-steps we worked out in the `retrain/Dockerfile`
+we can apply all of the setup steps we worked out in the `retrain/Dockerfile` 
 
+Confirming we have a working GPU:
 
 ![CGoogle Cloud GPU](google-cloud-gpu.png)
+
+We can create a Google Cloud machine image of the setup instance for a faster restart next time.
+
+
+Uploading the check points from our inhouse training we can resume where we left off.
 
 
 Google Cloud 
 Tesla K80
 
-
-
-We can create a machine image of the setup instance for a faster restart next time.
 
 
 
