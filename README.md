@@ -239,4 +239,43 @@ Collecting several day's images gave a collection of several hundred training im
 
 230 in 30 minutes. This was much quicker than expected and a somewhat cathartic.
 
+VoTT can export direct to the format TensorFlow needs.
+
+
+### Split the data
+
+
+
+
+### Object Detection API
+
+Don't try todo this locally; use a Docker image for GPU support
+https://www.tensorflow.org/install/docker
+
+
+
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md
+
+retraining/Dockerfile
+
+
+
+gtx 1050 Ti 4Gb
+```
+I0524 17:03:34.777422 139797117065024 model_lib_v2.py:680] Step 400 per-step time 1.050s loss=1.978
+```
+
+
+### Checkpoints
+
+As it trains TensorFlow periodically drops check points.
+These represent the current parameter settings for the model.
+Training is about finding the model parameters which fit the data.
+
+![Check points](checkpoints.png)
+
+Check points can be used to port pause and resume training.
+They can also be used to resume training on a faster GPU enabled cloud instance.
+
+
 
