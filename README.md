@@ -289,11 +289,20 @@ https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc
 retraining/Dockerfile
 
 
+While training TensorFlow will periodially log out a progress report.
 
-gtx 1050 Ti 4Gb
 ```
 I0524 17:03:34.777422 139797117065024 model_lib_v2.py:680] Step 400 per-step time 1.050s loss=1.978
 ```
+
+For a constant batch size the per-step-time should give is a rough way to compare different hardware options.
+
+Comparing some of the locally available hardware:
+
+4 core 3.4 GHz CPU ~ 5.0s
+2 x 10 core 2.8 CPU ~ 2.7s
+GTX 1050 Ti 4Gb ~ 1.0s
+
 
 
 ### Checkpoints
@@ -319,13 +328,9 @@ Confirming we have a working GPU:
 
 We can create a Google Cloud machine image of the setup instance for a faster restart next time.
 
-
 Uploading the check points from our inhouse training we can resume where we left off.
 
-
-Google Cloud 
-Tesla K80
-
+Comparing the per-step time with our local hardware the K80 looks slightly quicker.
 
 ```
 I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step time 0.734s loss=737993.750
