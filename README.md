@@ -157,7 +157,16 @@ Squirrels are not one of the classes this model was trained on.
 Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
 This is `detect.py`. There is plenty in there which I don't yet understand.
 
+
+### Resolving labels
+
+`labels.py`
+
+
+
+
 We've now verified that we can use TensorFlow to run a pretrained model locally.
+
 That pretrained model doesn't know about the specific animals we're interested in but can probably be retrained.
 
 Let's move onto productionising what we have on the assumption we'll be able to improve the model with training.
