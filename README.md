@@ -250,18 +250,26 @@ We can now write a script which will listen for the motion messages and call the
 Unlike humans animals won't generally give out personally identifying informational for free.
 They will trade it for nuts though.
 
-
 Collecting several day's images gave a collection of several hundred training images with examples of most of the garden animals.
-
 
 
 ### Annotating images
 
-[VoTT (Visual Object Tagging Tool)](https://github.com/microsoft/VoTT) 
+TensorFlow wants a set of custom classes (ie. squirrel, fox etc) and a set of example images with instances of
+these classes highlighted.
 
-230 in 30 minutes. This was much quicker than expected and a somewhat cathartic.
+An image annotation tool like [VoTT (Visual Object Tagging Tool)](https://github.com/microsoft/VoTT) will help here.
 
-VoTT can export direct to the format TensorFlow needs.
+Tagging with VoTT:
+![Squirrel tagged in VoTT](vott-squirrel.png)
+![Fox tagged in VoTT](vott-fox.png)
+
+These tools are optimised for smooth workflow.
+I mananged to tag 230 images in 30 minutes on my first attempt. 
+This was much quicker than expected and a somewhat cathartic.
+
+VoTT can export to the TensorFlow Records format for direct import into TensorFlow.
+
 
 
 ### Split the data
