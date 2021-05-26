@@ -338,4 +338,19 @@ I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step t
 
 
 
+### Loss blow outs
 
+Occasionally the loss would explode while training.
+Reducing the training rate seems to help.
+
+```
+INFO:tensorflow:Step 11300 per-step time 0.695s loss=0.727
+INFO:tensorflow:Step 11400 per-step time 0.703s loss=0.633
+INFO:tensorflow:Step 11500 per-step time 0.711s loss=0.619
+INFO:tensorflow:Step 11600 per-step time 0.698s loss=3.812
+INFO:tensorflow:Step 11700 per-step time 0.698s loss=5.212
+INFO:tensorflow:Step 11800 per-step time 0.703s loss=550625.562
+INFO:tensorflow:Step 11900 per-step time 0.704s loss=3951414016.000
+INFO:tensorflow:Step 12000 per-step time 0.696s loss=3848328704.000
+INFO:tensorflow:Step 12100 per-step time 0.712s loss=3739422208.000
+```
