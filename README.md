@@ -132,12 +132,12 @@ Working on a local machine I was blocked almost immediately with an error while 
 
 This could be a mismatch between TensorFlow 2.5 and the available examples.
 
-Retreating to Google Colab notebooks offered a known good development environment to get started in.
+Retreating to [https://colab.research.google.com](Google Colab) notebooks offered a known good development environment to get started in.
 
 
 ### Testing in Google Colab
 
-Alot of data development work goes on in notebook environments like Jupyter and Google Colab. The data community have discovered a really
+Alot of data development work goes on in notebook environments like Jupyter and [https://colab.research.google.com](Google Colab). The data community have discovered a really
 interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
 
 
