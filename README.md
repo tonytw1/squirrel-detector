@@ -352,7 +352,7 @@ GTX 1050 Ti 4Gb ~ 1.0s
 
 As it trains TensorFlow periodically drops check points.
 These represent the current parameter settings for the model.
-Training is about finding the model parameters which fit the data.
+Training is about finding the model parameters which best fit the data.
 
 ![Check points](checkpoints.png)
 
