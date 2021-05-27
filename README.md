@@ -48,7 +48,7 @@ This configuration line seems todo this:
 locate_motion_mode preview
 ```
 
-Motion seems to have an issue with this Pi camera's auto exposure mode.
+Motion seems to have an issue with the Pi camera's auto exposure mode.
 This can be worked around by setting the camera to 1024 x 640.
 
 Let's use a python script to catch these events and publish them.
