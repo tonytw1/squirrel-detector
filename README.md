@@ -340,8 +340,8 @@ I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step t
 
 ### Loss blow outs
 
-Occasionally the loss would explode while training.
-Reducing the training rate seems to help.
+The loss value would be expected to tread downwards during training; probably towards a value between 0.0 and 1.0.
+Occasionally it would explode like this:
 
 ```
 INFO:tensorflow:Step 11300 per-step time 0.695s loss=0.727
@@ -354,3 +354,9 @@ INFO:tensorflow:Step 11900 per-step time 0.704s loss=3951414016.000
 INFO:tensorflow:Step 12000 per-step time 0.696s loss=3848328704.000
 INFO:tensorflow:Step 12100 per-step time 0.712s loss=3739422208.000
 ```
+
+Reducing the training rate seems to help. This probably means that there is a sharp cliff
+somewhere in gradient which we're falling off. This could be todo with small data counts for one of the classes.
+
+
+
