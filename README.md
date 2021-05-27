@@ -1,5 +1,13 @@
 # Squirrel detector
 
+
+- [TLDR](#tldr)
+- [Hardware](#hardware)
+- [Detecting motion and capturing images](#detecting-motion-and-capturing-images)
+- [Not squirrel](https://github.com/tonytw1/squirrel-detector#not-squirrel)
+- [Object detection APIs](#object-detection-apis)
+- [TensorFlow object detection models](#tensorflow-object-detection-models)
+- [Testing in Google Colab]()#testing-in-google-colab)
 - [Running a model with TensorFlow Serving](#running-a-model-with-tensorflow-serving)
 - [Annotating images](#annotating-images)
 
@@ -126,7 +134,7 @@ This could be a mismatch between TensorFlow 2.5 and the available examples.
 Retreating to Google Colab notebooks offered a known good development environment to get started in.
 
 
-### Testing a saved model in Google Colab
+### Testing in Google Colab
 
 Alot of data development work goes on in notebook environments like Jupyter and Google Colab. The data community have discovered a really
 interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
