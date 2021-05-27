@@ -11,7 +11,6 @@ You can see device details with this command:
 v4l2-ctl --all
 ```
 
-
 ## Detecting motion and capturing images
 [Motion](https://motion-project.github.io) is available as a Raspberry Pi package.
 It does a good job of detecting movement and creating image files and bounding boxes.
@@ -19,12 +18,14 @@ It does a good job of detecting movement and creating image files and bounding b
 Here's an example of Motion detecting and bounding a movement:
 ![This is not a squirrel](images/not_squirrel.jpg)
 
-
 We'd like Motion to detect bounding boxes but not draw them on the saved image files.
 This configuration line seems todo this:
 ```
 locate_motion_mode preview
 ```
+
+Motion seems to have an issue with this Pi camera's auto exposure mode.
+This can be worked around by setting the camera to 1024 x 640.
 
 Let's use a python script to catch these events and publish them.
 
@@ -48,26 +49,19 @@ This happens in this script:
 `on_motion_detected.py`
 
 
-
-
 ## Not squirrel
 
-It quickly became apparent that there was more than squirriels going on in the garden.
+It quickly became apparent that there were more than squirrels in the garden.
 
 ![Not squirrel](images/fox.jpg)
 
 This is not a squirrel.
 
-We're going to want to categorise the objects in the motion messages to filter for squirriels.
-
+We'll want to categorise the objects in the motion messages so that we can filter for squirrels.
 
 We have a message containing a still image with a bounding box enclosing an area of motion.
-We're going to want to categorise the objects to filter for squirriels.
-
 We want to phrase this and maybe crop to the bounding box.
 We can then send the image to an object detection API.
-
-The results from the classification can be republished into another MQTT topic.
 
 
 ## Object detection APIs
@@ -78,9 +72,12 @@ We'll like to pass the area of interest to an object detection API.
 
 ### Google Vision
 
-Google Vision is probably the gold standard for object detection and has a nice python API.
-It seems to know all about squirrels as well.
+Google Vision seems to be the gold standard for object detection and has a nice python API.
+It also seems to know about squirrels.
+
 Here's a script to detect objects an image file and it's sample output.
+
+`google-vision.py`
 
 ![Google Vision output](google_vision.png)
 
@@ -100,20 +97,25 @@ The model will need to be wrapped in some sort of API so we can call it from our
 
 ## TensorFlow object detection models
 
-Saved models have been pretrained and can be downloaded and used to run predictions against our images.
+The [TensorFlow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
+contains saved models have been pretrained and can be downloaded.
 
-Lets pick a model from the [TensorFlow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) and try to run it against one of our test images.
+They can be used to run predictions against our images.
 
-Working on a local machine I was blocked almost immediately with an error trying to use the loaded model.
+Lets pick a pretrained model and try to run it against one of our test images.
+
+Working on a local machine I was blocked almost immediately with an error while trying to load the saved model.
+
 This could be a mismatch between TensorFlow 2.5 and the available examples.
 
-Retreating to Google Colab notebooks offers a known good development environment.
+Retreating to Google Colab notebooks offered a known good development environment to get started in.
 
-Alot of data development work goes in in notebook environments like Jupyter. The data community have discovered a really
+
+### Testing a saved model in Google Colab
+
+Alot of data development work goes on in notebook environments like Jupyter and Google Colab. The data community have discovered a really
 interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
 
-
-### Testing a saved model in Colab
 
 With a saved model imported into our Colab notebook we can load one of test images and ask the model to predict the visible objects.
 
@@ -127,15 +129,15 @@ The prediction returns a large map of results.
 
 ![Prediction results](predictions.png)
 
-
 `detection_classes` and `detection_scores` are interesting.
 This turns out to mean a 73% confidence of a class 17 object.
 
 What are the classes and why are the values all below 100?
-The saved model was trained on the COCO image set.
-It was only traught about 80 unique objects and the classe id's refer to one of them.
 
-The detection_class labels are available in the file `mscoco_label_map.pbtxt`
+The saved model was trained on the COCO image set.
+It was only taught about 90 unique objects and the class ids refer to one of them.
+
+The COCO labels are available in the file `mscoco_label_map.pbtxt`.
 
 ```
 item {
@@ -155,50 +157,55 @@ item {
 }
 ```
 
+
 ### Not cat
 
 Plotting the most confident prediction over the image:
 ![Not cat](not_cat.png)
 
-Looking up class 17 in the  label file we find `cat`.
+Looking up class 17 in the label file we find `cat`.
 
-It looks like the model doesn't know about squirrels!
-Squirrels are not one of the classes this model was trained on.
+Close but not quite right. It looks like the model doesn't know about squirrels!
+
+Looking in the COCO labels file confirms that squirrels are not one of the classes this model was trained on.
 
 ### Local detection script
 
 Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
-This is `detect.py`. There is plenty in there which I don't yet understand.
+This is `detect.py`. There is plenty in there which I don't yet understand yet.
 
 
 ### Resolving labels
+
+TensorFlow gives the impression that resolve class ids into labels is not it's concern.
+We'll need to spike out a way to user the labels file to resolve readable name for classes in the predictions returned from TensorFlow.
 
 `labels.py`
 
 
 
 
+### Premature productionising
+
 We've now verified that we can use TensorFlow to run a pretrained model locally.
 
 That pretrained model doesn't know about the specific animals we're interested in but can probably be retrained.
 
-Let's move onto productionising what we have on the assumption we'll be able to improve the model with training.
+Let's move onto productionising what we have on the assumption we'll be able to improve the model later.
 
 
 
 ## Running a model with TensorFlow Serving
 
-"[https://www.tensorflow.org/tfx/serving/docker](TensorFlow Serving) makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs"
+[https://www.tensorflow.org/tfx/serving/docker](TensorFlow Serving) makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs.
 
 This looks exactly what we want. A way to deploy a saved model behind a REST API.
 
 A Docker container is provided. 
 We use this as a base image to produce an image with our model baked into it.
-`Dockerfile`
-
+`serving/Dockerfile`
 
 Testing locally:
-
 `
 docker run -p 8501:8501 -e MODEL_NAME=ssd_mobilenet_v2_320x320_coco17_tpu-8 eelpie/tensorflowserving
 `
@@ -219,28 +226,11 @@ Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_
     ]
 }
 ```
-
-
-
-
-Now we can ask for a predicition with an HTTP call rather than importing the TensorFlow model into the script
+Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into the script
 
 `
 detect_rest.py
 `
-
-
-
-### Hooking it all together
-
-We can now write a script which will listen for the motion messages and call the TensowFlow model for object detections.
-
-`listener.py'
-
-
-
-
-
 
 
 ## Retraining
@@ -265,7 +255,7 @@ Tagging with VoTT:
 ![Fox tagged in VoTT](vott-fox.png)
 
 These tools are optimised for smooth workflow.
-I mananged to tag 230 images in 30 minutes on my first attempt. 
+I managed to tag 230 images in 30 minutes on my first attempt.
 This was much quicker than expected and a somewhat cathartic.
 
 VoTT can export to the TensorFlow Records format for direct import into TensorFlow.
@@ -274,24 +264,32 @@ VoTT can export to the TensorFlow Records format for direct import into TensorFl
 
 ### Split the data
 
+We need to reserve some of our test data for testing of our trained model.
+Just like a real exam it needs to be tested on images it's not seen before.
+
 ```
 cd Squirrels-TFRecords-export
 mkdir training
 mkdir eval
 mv *.tfrecord training
+mv training/7* eval
 ```
+
+A better splitting would probably try to get a representative spread of classes into the evaluation folder.
 
 
 ### Object Detection API
 
-Don't try todo this locally; use a Docker image for GPU support
-https://www.tensorflow.org/install/docker
+The Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
 
+This [https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md](installation instructions) seem to have suffered from python and CUDA dependency rot.
 
-
-https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md
-
+My attempts to working around this are documented in this Docker file:
+```
 retraining/Dockerfile
+```
+
+
 
 
 While training TensorFlow will periodially log out a progress report.
@@ -309,8 +307,17 @@ Comparing some of the locally available hardware:
 GTX 1050 Ti 4Gb ~ 1.0s
 
 
+### Training
+
+With our test data prepared, we need to add a pretrained existing model,
+a training pipeline to describe the training task and a checkpoint describe the training the existing model as already undergone.
+
+`retraining/train.bash`
+
 
 ### Evaluating while training
+
+In theory we can use the evaluation images we reserved to continually evaluate the models accuracy as it trains.
 
 ```
 export CUDA_VISIBLE_DEVICES=-1
@@ -319,8 +326,7 @@ python3 models/research/object_detection/model_main_tf2.py --pipeline_config_pat
 
 Note how we have to disable CUDA to prevent the training and evaluation processes competing for the GPU.
 
-This fails. Could be a TensorFlow 2.5 incompatibility
-
+This fails. Could be a TensorFlow 2.5 incompatibility.
 ```
 INFO:tensorflow:Performing evaluation on 76 images.
 I0527 09:17:59.674201 139992811644736 coco_evaluation.py:293] Performing evaluation on 76 images.
@@ -387,16 +393,13 @@ Confirming we have a working GPU:
 
 We can create a Google Cloud machine image of the setup instance for a faster restart next time.
 
-Uploading the check points from our inhouse training we can resume where we left off.
+Uploading the check points from our in house training we can resume where we left off.
 
 Comparing the per-step time with our local hardware the K80 looks slightly quicker.
 
 ```
 I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step time 0.734s loss=737993.750
 ```
-
-
-`retraining/train.bash`
 
 
 ### Loss blow outs
@@ -429,8 +432,31 @@ This could be todo with small data counts for one of the classes.
 ### Exporting the model
 
 After training we can export the model as a saved model.
-This can then be loaded directly into TensorFlow Serving.
 
 `retraining/export.bash`
 
+This can then be loaded directly into TensorFlow Serving and is ready so detect our objects.
 
+```
+ curl http://localhost:8501/v1/models/squirrelnet
+{
+ "model_version_status": [
+  {
+   "version": "1",
+   "state": "AVAILABLE",
+   "status": {
+    "error_code": "OK",
+    "error_message": ""
+   }
+  }
+ ]
+}
+```
+
+
+### Hooking it all together
+
+We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
+and send notifications.
+
+`listener/listener.py'
