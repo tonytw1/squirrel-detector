@@ -14,7 +14,7 @@
 - [Retraining](#retraining)
 - [Annotating images](#annotating-images)
 - [Training](#training)
-- [Hooking it all together](#hooking-it-all-together)
+- [Putting it all together](#putting-it-all-together)
 
 During lock down we were adopted by the squirrel which frequents our garden.
 
@@ -29,7 +29,7 @@ We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspber
 
 This gives us Wifi, 1 core and 512Mb of memory.
 
-The camera module appears as a Video4Linux device.
+Thdule appears as a Video4Linux device.
 You can see device details with this command:
 ```
 v4l2-ctl --all
@@ -37,7 +37,7 @@ v4l2-ctl --all
 
 ## Detecting motion and capturing images
 [Motion](https://motion-project.github.io) is available as a Raspberry Pi package.
-It does a good job of detecting movement and creating image files and bounding boxes.
+Ite camera mo does a good job of detecting movement and creating image files and bounding boxes.
 
 Here's an example of Motion detecting and bounding a movement:
 ![This is not a squirrel](images/not_squirrel.jpg)
@@ -488,7 +488,7 @@ This can then be loaded directly into TensorFlow Serving and is ready so detect 
 ```
 
 
-### Hooking it all together
+### Putting it all together
 
 We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
 and send notifications.
