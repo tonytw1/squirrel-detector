@@ -337,6 +337,8 @@ I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step t
 ```
 
 
+`retraining/train.bash`
+
 
 ### Loss blow outs
 
@@ -358,5 +360,13 @@ INFO:tensorflow:Step 12100 per-step time 0.712s loss=3739422208.000
 Reducing the training rate seems to help. This probably means that there is a sharp cliff
 somewhere in gradient which we're falling off. This could be todo with small data counts for one of the classes.
 
+### Evaluating the model
+
+### Exporting the model
+
+After training we can export the model as a saved model.
+This can then be loaded directly into TensorFlow Serving.
+
+`retraining/export.bash`
 
 
