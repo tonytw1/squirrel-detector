@@ -202,7 +202,7 @@ There is plenty in there which I don't yet understand yet.
 
 ### Resolving labels
 
-TensorFlow gives the impression that resolve class ids into labels is not it's concern.
+TensorFlow gives the impression that resolving class ids into labels is not it's concern.
 We'll need to spike out a way to user the labels file to resolve readable name for classes in the predictions returned from TensorFlow.
 
 [labels/labels.py](labels/labels.py)
