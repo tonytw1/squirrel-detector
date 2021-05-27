@@ -101,7 +101,7 @@ It also seems to know about squirrels.
 
 Here's a script to detect objects an image file and it's sample output.
 
-`google-vision.py`
+[google-vision.py](google-vision.py)
 
 ![Google Vision output](google_vision.png)
 
@@ -140,10 +140,9 @@ Retreating to [https://colab.research.google.com](Google Colab) notebooks offere
 Alot of data development work goes on in notebook environments like Jupyter and [https://colab.research.google.com](Google Colab). The data community have discovered a really
 interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
 
+With a saved model imported into our Colab notebook we can load one of our test images and ask the model to predict the visible objects.
 
-With a saved model imported into our Colab notebook we can load one of test images and ask the model to predict the visible objects.
-
-![Colan perdiction](colab.png)
+![Colan prediction](colab.png)
 
 Requesting a prediction.
 
@@ -196,7 +195,9 @@ Looking in the COCO labels file confirms that squirrels are not one of the class
 ### Local detection script
 
 Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
-This is `detect.py`. There is plenty in there which I don't yet understand yet.
+There is plenty in there which I don't yet understand yet.
+
+[detect.py](detect.py)
 
 
 ### Resolving labels
@@ -268,9 +269,9 @@ Collecting several day's images gave a collection of several hundred training im
 
 ### Annotating images
 
-TensorFlow wants a set of custom classes (ie. squirrel, fox etc) and a set of example images with instances of
-these classes highlighted. If the question is where is the squirrel in this picture then we need to provide many examples
-of the correct answer.
+TensorFlow wants a set of custom classes representing the objects we are interested in (ie. squirrel, fox etc).
+It also needs a set of example images with instances of these classes highlighted.
+If the question is where is the squirrel in this picture then we need to provide many examples of the correct answer.
 
 An image annotation tool like [VoTT (Visual Object Tagging Tool)](https://github.com/microsoft/VoTT) will help here.
 
@@ -289,7 +290,7 @@ VoTT can export to the TensorFlow Records format for direct import into TensorFl
 ### Split the data
 
 We need to reserve some of our test data for testing of our trained model.
-Just like a real exam it needs to be tested on images it's not seen before.
+Just like a real exam it needs to be tested on questions it's not seen before.
 
 ```
 cd Squirrels-TFRecords-export
