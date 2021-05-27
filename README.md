@@ -440,6 +440,10 @@ This could be todo with small data counts for one of the classes.
 
 ### To the Cloud
 
+Google Cloud let's us speed this process up by using a cloud instance with an expensive GPU attached (~ $10 per day)
+
+![GPU](gpu.png)
+
 Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
 we can apply all of the setup steps we worked out in [retraining/Dockerfile](retraining/Dockerfile).
 
