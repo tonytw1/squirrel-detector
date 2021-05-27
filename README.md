@@ -310,6 +310,17 @@ GTX 1050 Ti 4Gb ~ 1.0s
 
 
 
+### Evaluating while training
+
+```
+export CUDA_VISIBLE_DEVICES=-1
+python3 models/research/object_detection/model_main_tf2.py --pipeline_config_path=training/pipeline.config --model_dir=training --checkpoint_dir=training  --alsologtostderr
+```
+
+Note how we have to disable CUDA to prevent the training and evaluation processes competing for the GPU.
+
+
+
 ### Checkpoints
 
 As it trains TensorFlow periodically drops check points.
@@ -371,9 +382,6 @@ which we're falling over.
 Reducing the training rate from 0.8 to 0.2 seems to have mitigated this at the cost of much slower initial convergence.
 
 This could be todo with small data counts for one of the classes.
-
-
-### Evaluating the model
 
 ### Exporting the model
 
