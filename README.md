@@ -306,9 +306,9 @@ A better splitting would probably try to get a representative spread of classes 
 
 The Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
 
-This [https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md](installation instructions) seem to have suffered from python and CUDA dependency rot.
+The [https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md](installation instructions) seem to have suffered from python and CUDA dependency rot.
 
-Getting a working, GPU enabled install of TensorFlow and the Object Detection API was difficult.
+Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
 
 My attempts to working around this are documented in this Docker file:
 [retraining/Dockerfile](retraining/Dockerfile)
