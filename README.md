@@ -270,7 +270,8 @@ Collecting several day's images gave a collection of several hundred training im
 ### Annotating images
 
 TensorFlow wants a set of custom classes (ie. squirrel, fox etc) and a set of example images with instances of
-these classes highlighted.
+these classes highlighted. If the question is where is the squirrel in this picture then we need to provide many examples
+of the correct answer.
 
 An image annotation tool like [VoTT (Visual Object Tagging Tool)](https://github.com/microsoft/VoTT) will help here.
 
@@ -310,14 +311,16 @@ The [https://github.com/tensorflow/models/blob/master/research/object_detection/
 
 Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
 
-My attempts to working around this are documented in this Docker file:
-[retraining/Dockerfile](retraining/Dockerfile)
+My attempts to working around this are documented in [retraining/Dockerfile](retraining/Dockerfile).
 
 
 ### Training
 
 With our test data prepared, we need to add a pretrained existing model,
-a training pipeline to describe the training task and a checkpoint describe the training the existing model as already undergone.
+a training pipeline to describe the training task and a checkpoint to describe the training the existing model has already undergone.
+
+We start the training process and over the course of several hours TensorFlow will attempt to discover the model parameters
+which minimise prediction error (or loss) against our training images.
 
 [retraining/train.bash](retraining/train.bash)
 
@@ -438,7 +441,7 @@ This could be todo with small data counts for one of the classes.
 ### To the Cloud
 
 Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
-we can apply all of the setup steps we worked out in [retrain/Dockerfile](retrain/Dockerfile).
+we can apply all of the setup steps we worked out in [retraining/Dockerfile](retraining/Dockerfile).
 
 Confirming we have a working GPU:
 
