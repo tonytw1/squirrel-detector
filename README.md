@@ -251,7 +251,7 @@ Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_
 ```
 Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into our script.
 
-[detect_rest.py](detect_rest)
+[detect_rest.py](detect_rest.py)
 
 
 ## Retraining
