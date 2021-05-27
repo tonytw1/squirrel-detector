@@ -226,7 +226,8 @@ This looks exactly what we want. A way to deploy a saved model behind a REST API
 
 A Docker container is provided. 
 We use this as a base image to produce an image with our model baked into it.
-`serving/Dockerfile`
+
+[serving/Dockerfile](serving/Dockerfile)
 
 Testing locally:
 `
