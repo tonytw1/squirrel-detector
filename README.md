@@ -274,7 +274,12 @@ VoTT can export to the TensorFlow Records format for direct import into TensorFl
 
 ### Split the data
 
-
+```
+cd Squirrels-TFRecords-export
+mkdir training
+mkdir eval
+mv *.tfrecord training
+```
 
 
 ### Object Detection API
@@ -343,6 +348,9 @@ I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step t
 ### Loss blow outs
 
 The loss value would be expected to tread downwards during training; probably towards a value between 0.0 and 1.0.
+
+![Loss converging](loss-converging.png)
+
 Occasionally it would explode like this:
 
 ```
@@ -357,8 +365,13 @@ INFO:tensorflow:Step 12000 per-step time 0.696s loss=3848328704.000
 INFO:tensorflow:Step 12100 per-step time 0.712s loss=3739422208.000
 ```
 
-Reducing the training rate seems to help. This probably means that there is a sharp cliff
-somewhere in gradient which we're falling off. This could be todo with small data counts for one of the classes.
+Reducing the training rate seems to help. This probably means there is a sharp cliff somewhere in gradient
+which we're falling over.
+
+Reducing the training rate from 0.8 to 0.2 seems to have mitigated this at the cost of much slower initial convergence.
+
+This could be todo with small data counts for one of the classes.
+
 
 ### Evaluating the model
 
