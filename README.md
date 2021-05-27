@@ -204,9 +204,7 @@ This is `detect.py`. There is plenty in there which I don't yet understand yet.
 TensorFlow gives the impression that resolve class ids into labels is not it's concern.
 We'll need to spike out a way to user the labels file to resolve readable name for classes in the predictions returned from TensorFlow.
 
-`labels.py`
-
-
+[labels/labels.py](labels/labels.py)
 
 
 ### Premature productionising
@@ -250,14 +248,15 @@ Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_
     ]
 }
 ```
-Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into the script
+Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into our script.
 
-`
-detect_rest.py
-`
+[detect_rest.py](detect_rest)
 
 
 ## Retraining
+
+Our downloaded model doesn't know about squirrels. We need to retrain it.
+
 
 ### Collecting training data
 
