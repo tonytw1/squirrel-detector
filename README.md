@@ -1,3 +1,13 @@
+## TLDR
+
+During lock down we were adopted by the squirrel which frequents our garden.
+
+We'd like to be notified when a squirrel is outside the window.
+Way too much time was spent building a Raspberry Pi webcam and training a TensorFlow model to recognise squirrels.
+
+![Mr Squirrel](images/squirrel.jpg)
+
+
 ## Hardware
 
 We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/) with the
