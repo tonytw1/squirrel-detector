@@ -11,10 +11,10 @@
 - [Testing in Google Colab](#testing-in-google-colab)
 - [Running a model with TensorFlow Serving](#running-a-model-with-tensorflow-serving)
 
-- [Retraining]](#retraining)
+- [Retraining](#retraining)
 - [Annotating images](#annotating-images)
-
-## TLDR
+- [Training](#training)
+- [Hooking it all together](#hooking-it-all-together)
 
 During lock down we were adopted by the squirrel which frequents our garden.
 
@@ -308,12 +308,18 @@ The Object Detection API seems to be TensorFlow's high level wrapper around this
 
 This [https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md](installation instructions) seem to have suffered from python and CUDA dependency rot.
 
+Getting a working, GPU enabled install of TensorFlow and the Object Detection API was difficult.
+
 My attempts to working around this are documented in this Docker file:
-```
-retraining/Dockerfile
-```
+[retraining/Dockerfile](retraining/Dockerfile)
 
 
+### Training
+
+With our test data prepared, we need to add a pretrained existing model,
+a training pipeline to describe the training task and a checkpoint describe the training the existing model as already undergone.
+
+[retraining/train.bash](retraining/train.bash)
 
 
 While training TensorFlow will periodially log out a progress report.
@@ -329,14 +335,6 @@ Comparing some of the locally available hardware:
 4 core 3.4 GHz CPU ~ 5.0s
 2 x 10 core 2.8 CPU ~ 2.7s
 GTX 1050 Ti 4Gb ~ 1.0s
-
-
-### Training
-
-With our test data prepared, we need to add a pretrained existing model,
-a training pipeline to describe the training task and a checkpoint describe the training the existing model as already undergone.
-
-`retraining/train.bash`
 
 
 ### Evaluating while training
@@ -457,7 +455,7 @@ This could be todo with small data counts for one of the classes.
 
 After training we can export the model as a saved model.
 
-`retraining/export.bash`
+[retraining/export.bash](retraining/export.bash)
 
 This can then be loaded directly into TensorFlow Serving and is ready so detect our objects.
 
