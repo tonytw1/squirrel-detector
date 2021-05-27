@@ -1,5 +1,8 @@
 # Squirrel detector
 
+- [Running a model with TensorFlow Serving](#running-a-model-with-tensorflow-serving)
+- [Annotating images](#annotating-images)
+
 ## TLDR
 
 During lock down we were adopted by the squirrel which frequents our garden.
