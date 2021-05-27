@@ -1,5 +1,6 @@
 # Squirrel detector
 
+![Mr Squirrel](images/squirrel.jpg)
 
 - [TLDR](#tldr)
 - [Hardware](#hardware)
@@ -7,8 +8,10 @@
 - [Not squirrel](https://github.com/tonytw1/squirrel-detector#not-squirrel)
 - [Object detection APIs](#object-detection-apis)
 - [TensorFlow object detection models](#tensorflow-object-detection-models)
-- [Testing in Google Colab]()#testing-in-google-colab)
+- [Testing in Google Colab](#testing-in-google-colab)
 - [Running a model with TensorFlow Serving](#running-a-model-with-tensorflow-serving)
+
+- [Retraining]](#retraining)
 - [Annotating images](#annotating-images)
 
 ## TLDR
@@ -17,8 +20,6 @@ During lock down we were adopted by the squirrel which frequents our garden.
 
 Now we'd like to be notified when a squirrel is outside the window, so
 we built a Raspberry Pi webcam and trained a TensorFlow model to recognise squirrels.
-
-![Mr Squirrel](images/squirrel.jpg)
 
 
 ## Hardware
