@@ -16,6 +16,8 @@
 - [Training](#training)
 - [Putting it all together](#putting-it-all-together)
 
+## TLDR
+
 During lock down we were adopted by the squirrel which frequents our garden.
 
 Now we'd like to be notified when a squirrel is outside the window, so
