@@ -321,6 +321,11 @@ a training pipeline to describe the training task and a checkpoint describe the 
 
 [retraining/train.bash](retraining/train.bash)
 
+The loss value would be expected to tread downwards during training; probably towards a value between 0.0 and 1.0.
+
+![Loss converging](loss-converging.png)
+
+
 
 While training TensorFlow will periodially log out a progress report.
 
@@ -335,6 +340,19 @@ Comparing some of the locally available hardware:
 4 core 3.4 GHz CPU ~ 5.0s
 2 x 10 core 2.8 CPU ~ 2.7s
 GTX 1050 Ti 4Gb ~ 1.0s
+
+
+### Checkpoints
+
+As it trains TensorFlow periodically drops check points.
+These represent the current parameter settings for the model.
+Training is about finding the model parameters which fit the data.
+
+![Check points](checkpoints.png)
+
+Check points can be used to port pause and resume training.
+They can also be used to resume training on a faster GPU enabled cloud instance.
+
 
 
 ### Evaluating while training
@@ -392,43 +410,8 @@ TypeError: 'numpy.float64' object cannot be interpreted as an integer
 ```
 
 
-### Checkpoints
-
-As it trains TensorFlow periodically drops check points.
-These represent the current parameter settings for the model.
-Training is about finding the model parameters which fit the data.
-
-![Check points](checkpoints.png)
-
-Check points can be used to port pause and resume training.
-They can also be used to resume training on a faster GPU enabled cloud instance.
-
-
-### To the Cloud
-
-Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
-we can apply all of the setup steps we worked out in the `retrain/Dockerfile` 
-
-Confirming we have a working GPU:
-
-![CGoogle Cloud GPU](google-cloud-gpu.png)
-
-We can create a Google Cloud machine image of the setup instance for a faster restart next time.
-
-Uploading the check points from our in house training we can resume where we left off.
-
-Comparing the per-step time with our local hardware the K80 looks slightly quicker.
-
-```
-I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step time 0.734s loss=737993.750
-```
-
 
 ### Loss blow outs
-
-The loss value would be expected to tread downwards during training; probably towards a value between 0.0 and 1.0.
-
-![Loss converging](loss-converging.png)
 
 Occasionally it would explode like this:
 
@@ -450,6 +433,27 @@ which we're falling over.
 Reducing the training rate from 0.8 to 0.2 seems to have mitigated this at the cost of much slower initial convergence.
 
 This could be todo with small data counts for one of the classes.
+
+
+### To the Cloud
+
+Starting a Google Cloud instance with an Ubuntu 20.04 base image and an attached GPU,
+we can apply all of the setup steps we worked out in [retrain/Dockerfile](retrain/Dockerfile).
+
+Confirming we have a working GPU:
+
+![CGoogle Cloud GPU](google-cloud-gpu.png)
+
+We can create a Google Cloud machine image of the setup instance for a faster restart next time.
+
+Uploading the check points from our in house training we can resume where we left off.
+
+Comparing the per-step time with our local hardware the K80 looks slightly quicker.
+
+```
+I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step time 0.734s loss=737993.750
+```
+
 
 ### Exporting the model
 
@@ -481,4 +485,4 @@ This can then be loaded directly into TensorFlow Serving and is ready so detect 
 We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
 and send notifications.
 
-`listener/listener.py'
+[listener](listener)
