@@ -421,7 +421,7 @@ TypeError: 'numpy.float64' object cannot be interpreted as an integer
 
 ### Loss blow outs
 
-Occasionally it would explode like this:
+Occasionally the loss would explode like this:
 
 ```
 INFO:tensorflow:Step 11300 per-step time 0.695s loss=0.727
