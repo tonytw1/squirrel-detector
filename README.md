@@ -53,7 +53,10 @@ locate_motion_mode preview
 Motion seems to have an issue with the Pi camera's auto exposure mode.
 This can be worked around by setting the camera to 1024 x 640.
 
-Let's use a python script to catch these events and publish them.
+Our camera is connected to a small device with limited processing capability.
+We want to send the image somewhere where a more capable machine can look at it.
+
+Let's use a python script to catch the Motion events and publish them.
 
 This script needs to capture the image file path and the bounding box from Motion and encode them into a message.
 
@@ -62,17 +65,15 @@ We can hook these together with this configuration line:
 
 `on_picture_save python3 /home/pi/on_motion_detected.py %f %w %h %K %L %i %J`
 
-Our camera is connected to a small device with limited processing capability.
-We want to send the image somewhere where a more capable machine can look at it.
-
 We'll need to encode the image file for inclusion in a message.
 Base64 encoding should be enough.
 
 We'll use MQTT as the message format. MQTT is really practical about message sizes limits.
 We can publish the motion messages to a MQTT topic which other machines can subscribe to.
 
-This happens in this script:
-`on_motion_detected.py`
+This happens in the script `on_motion_detected.py`.
+
+![on_motion_detected.py](on_motion_detected.py)
 
 
 ## Not squirrel
