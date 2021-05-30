@@ -334,7 +334,7 @@ The loss value would be expected to tread downwards during training; probably to
 
 
 
-While training TensorFlow will periodially log out a progress report.
+While training TensorFlow will periodically log out a progress report.
 
 ```
 I0524 17:03:34.777422 139797117065024 model_lib_v2.py:680] Step 400 per-step time 1.050s loss=1.978
@@ -344,10 +344,11 @@ For a constant batch size the per-step-time should give is a rough way to compar
 
 Comparing some of the locally available hardware:
 
+```
 4 core 3.4 GHz CPU ~ 5.0s
-2 x 10 core 2.8 CPU ~ 2.7s
+2 x 10 core 2.8 GHz CPU ~ 2.7s
 GTX 1050 Ti 4Gb ~ 1.0s
-
+```
 
 ### Checkpoints
 
