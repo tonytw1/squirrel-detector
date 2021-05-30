@@ -73,7 +73,7 @@ We can publish the motion messages to a MQTT topic which other machines can subs
 
 This happens in the script `on_motion_detected.py`.
 
-![on_motion_detected.py](on_motion_detected.py)
+[on_motion_detected.py](on_motion_detected.py)
 
 
 ## Not squirrel
