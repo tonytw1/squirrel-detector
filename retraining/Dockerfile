@@ -25,7 +25,7 @@ RUN cd models/research && protoc object_detection/protos/*.proto --python_out=. 
 RUN cd models/research && python3 -m pip install .
 
 #ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 88 from C header, got 80 from PyObject
-RUN python3 -m pip install pycocotools==2.0.0
+RUN python3 -m pip install pycocotools==2.0.1
 
 # GPU
 RUN echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /" > /etc/apt/sources.list.d/nvidia_cuda_ubuntu2004.list
