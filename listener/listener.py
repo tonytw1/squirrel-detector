@@ -11,6 +11,7 @@ import base64
 import io
 import time
 import os
+import cv2
 
 import smtplib
 from email.mime.text import MIMEText
@@ -36,9 +37,6 @@ smtp_password = os.environ.get('SMTP_PASSWORD')
 smtp_server = os.environ.get('SMTP_HOST')
 
 print('Setting up email server: {0}'.format(smtp_server))
-server = smtplib.SMTP(smtp_server, 587)
-server.login(smtp_user, smtp_password)
-print('Email server connected')
 
 last_sent = 0
 
@@ -62,8 +60,7 @@ def get_labels(label_map_path):
   return label_map_dict
 
 # Given a PIL image call TensorFlow Serving to detect objects
-def predict(image):
-	image_np = numpy.array(image)
+def predict(image_np):
 	payload = {"instances": [image_np.tolist()]}
 
 	predict_url = tensorflowserver_url + "/models/" + model + ":predict"
@@ -92,7 +89,8 @@ def on_message(client, userdata, msg):
     image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
     image_filename =  message['image_file'].rsplit('/', 1)[1]
 
-    predictions = predict(image)
+    image_np = numpy.array(image)
+    predictions = predict(image_np)
 
     prediction = predictions[0];
     detection_scores = prediction['detection_scores']
@@ -124,7 +122,7 @@ def on_message(client, userdata, msg):
             max = maxes[c]
             max_index = c
 
-    if (max > 0.50) & (time.time() - last_sent > 10):
+    if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         m = "";
         for c in maxes:
@@ -150,8 +148,30 @@ Motion detected
         plain_part = MIMEText(text, "plain")
         html_part = MIMEText(html.format(m), "html")
 
+        detection_boxes = prediction['detection_boxes']
+        detection_box = detection_boxes[0]
+
+        image_with_detections = image_np
+
+        width, height = image.size
+        color = (0, 255, 0)
+
+        y1 = int(height * detection_box[0])
+        x1 = int(width * detection_box[1])
+        y2 = int(height * detection_box[2])
+        x2 = int(width * detection_box[3])
+        image_with_detections = cv2.rectangle(
+            image_with_detections,
+            (x1, y1),
+            (x2, y2),
+            color,
+            3
+        )
+
+        image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
+
         img_byte_arr = io.BytesIO()
-        image.save(img_byte_arr, format='JPEG')
+        image_with_detections_pil.save(img_byte_arr, format='JPEG')
         img_byte_arr = img_byte_arr.getvalue()
 
         image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
@@ -161,6 +181,8 @@ Motion detected
         message.attach(html_part)
         message.attach(image_attachment)
 
+        server = smtplib.SMTP(smtp_server, 587)
+        server.login(smtp_user, smtp_password)
         server.sendmail(message_from, message_to, message.as_string())
         print("Sent notification: " + subject)
         # Update rate limit watermark
