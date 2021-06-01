@@ -365,7 +365,7 @@ They can also be used to resume training on a faster GPU enabled cloud instance.
 
 ### Evaluating while training
 
-In theory we can use the evaluation images we reserved to continually evaluate the models accuracy as it trains.
+We can use the  evaluation images we reserved to continually evaluate the model's accuracy as it trains.
 
 ```
 export CUDA_VISIBLE_DEVICES=-1
@@ -374,49 +374,12 @@ python3 models/research/object_detection/model_main_tf2.py --pipeline_config_pat
 
 Note how we have to disable CUDA to prevent the training and evaluation processes competing for the GPU.
 
-This fails. Could be a TensorFlow 2.5 incompatibility.
-```
-INFO:tensorflow:Performing evaluation on 76 images.
-I0527 09:17:59.674201 139992811644736 coco_evaluation.py:293] Performing evaluation on 76 images.
-creating index...
-index created!
-INFO:tensorflow:Loading and preparing annotation results...
-I0527 09:17:59.675634 139992811644736 coco_tools.py:116] Loading and preparing annotation results...
-INFO:tensorflow:DONE (t=0.00s)
-I0527 09:17:59.680794 139992811644736 coco_tools.py:138] DONE (t=0.00s)
-creating index...
-index created!
-Traceback (most recent call last):
-  File "models/research/object_detection/model_main_tf2.py", line 114, in <module>
-    tf.compat.v1.app.run()
-  File "/usr/local/lib/python3.8/dist-packages/tensorflow/python/platform/app.py", line 40, in run
-    _run(main=main, argv=argv, flags_parser=_parse_flags_tolerate_undef)
-  File "/usr/local/lib/python3.8/dist-packages/absl/app.py", line 303, in run
-    _run_main(main, args)
-  File "/usr/local/lib/python3.8/dist-packages/absl/app.py", line 251, in _run_main
-    sys.exit(main(argv))
-  File "models/research/object_detection/model_main_tf2.py", line 81, in main
-    model_lib_v2.eval_continuously(
-  File "/usr/local/lib/python3.8/dist-packages/object_detection/model_lib_v2.py", line 1133, in eval_continuously
-    eager_eval_loop(
-  File "/usr/local/lib/python3.8/dist-packages/object_detection/model_lib_v2.py", line 984, in eager_eval_loop
-    eval_metrics.update(evaluator.evaluate())
-  File "/usr/local/lib/python3.8/dist-packages/object_detection/metrics/coco_evaluation.py", line 302, in evaluate
-    box_evaluator = coco_tools.COCOEvalWrapper(
-  File "/usr/local/lib/python3.8/dist-packages/object_detection/metrics/coco_tools.py", line 207, in __init__
-    cocoeval.COCOeval.__init__(self, groundtruth, detections, iouType=iou_type)
-  File "/usr/local/lib/python3.8/dist-packages/pycocotools/cocoeval.py", line 76, in __init__
-    self.params = Params(iouType=iouType) # parameters
-  File "/usr/local/lib/python3.8/dist-packages/pycocotools/cocoeval.py", line 527, in __init__
-    self.setDetParams()
-  File "/usr/local/lib/python3.8/dist-packages/pycocotools/cocoeval.py", line 507, in setDetParams
-    self.iouThrs = np.linspace(.5, 0.95, np.round((0.95 - .5) / .05) + 1, endpoint=True)
-  File "<__array_function__ internals>", line 5, in linspace
-  File "/usr/local/lib/python3.8/dist-packages/numpy/core/function_base.py", line 113, in linspace
-    num = operator.index(num)
-TypeError: 'numpy.float64' object cannot be interpreted as an integer
-```
+![Evaluation standard output](eval_stdout.png)
 
+
+The evaluation process outputs files which TensorBoard can use to show how the model's predictions change as it trains.
+
+![TensorBoard image evaluation](eval.png)
 
 
 ### Loss blow outs
