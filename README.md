@@ -461,3 +461,27 @@ We can now write a script which will listen for the motion messages, call the Te
 and send notifications.
 
 [listener](listener)
+
+
+
+## Inference speed
+
+If we were doing this at scale we'd probably be interested in the inference preformance.
+
+How to CPU and GPU compare for inference time?
+Using the python API as in detect.py some rough inference times are for CPU and GPU are:
+
+```
+3.4 GHz CPU ~ 99 ms
+GT 1030 GPU (2Gb RAM) ~ 79 ms
+```
+
+Slightly quicker on the GPU but the difference isn't impactful when detect_rest.py takes ~ 1000 ms.
+
+Most of the latenty is probably marshalling the enormous JSON response (~ 6Mb).
+Any tuning should probably happen there first.
+The prediction always returns 100 predictions; the long tail is mostly useless which we're interested in the top 1 or 2 detections.
+
+Where does this 100 sizing come from?
+
+
