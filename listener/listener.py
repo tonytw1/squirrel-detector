@@ -12,6 +12,7 @@ import io
 import time
 import os
 import cv2
+import uuid
 
 import smtplib
 from email.mime.text import MIMEText
@@ -131,6 +132,7 @@ def on_message(client, userdata, msg):
             m = m + detection_line
 
         subject = 'Motion detected - {0} {1}'.format(labels[max_index], maxes[max_index])
+        cid = image_filename + uuid.uuid4().hex
 
         message = MIMEMultipart("alternative")
         message["Subject"] = subject
@@ -141,12 +143,13 @@ def on_message(client, userdata, msg):
 Motion detected
         """
         html = """\
-<pre>{0}</pre>
+<p><pre>{0}</pre></p>
+<p><img src="cid:{1}"></p>
 <hr/>
         """
 
         plain_part = MIMEText(text, "plain")
-        html_part = MIMEText(html.format(m), "html")
+        html_part = MIMEText(html.format(m, cid), "html")
 
         detection_boxes = prediction['detection_boxes']
         detection_box = detection_boxes[0]
@@ -174,8 +177,10 @@ Motion detected
         image_with_detections_pil.save(img_byte_arr, format='JPEG')
         img_byte_arr = img_byte_arr.getvalue()
 
+
         image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
         image_attachment.add_header('Content-Disposition', 'attachment; filename={0}'.format(image_filename))
+        image_attachment.add_header('Content-ID', '<{}>'.format(cid))
 
         message.attach(plain_part)
         message.attach(html_part)
