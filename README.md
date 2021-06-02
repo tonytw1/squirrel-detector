@@ -455,6 +455,20 @@ This can then be loaded directly into TensorFlow Serving and is ready so detect 
 ```
 
 
+### Who dis?
+
+This unknown animal is detected with high confidence is an instance of another simular class.
+
+![Not magpie](not_magpie.png)
+
+Adding this interloper as a new class and retraining seems to resolve the issue.
+
+![Seagull](seagull.png)
+
+Providing a the same image as a none tagged training image may also work but wasn't tried.
+
+
+
 ### Putting it all together
 
 We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections

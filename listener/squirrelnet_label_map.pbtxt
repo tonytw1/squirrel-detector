@@ -12,9 +12,9 @@ item {
 }
 item {
  id: 4
- name: 'cat'
+ name: 'pigeon'
 }
 item {
  id: 5
- name: 'pigeon'
+ name: 'seagull'
 }
