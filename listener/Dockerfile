@@ -4,6 +4,8 @@ RUN pip install pillow
 RUN pip install numpy
 RUN pip install requests
 RUN pip install protobuf
+
+RUN apt-get update
 RUN apt-get install -y python3-opencv
 
 WORKDIR /usr/src/app
