@@ -155,7 +155,7 @@ Motion detected
         image_with_detections = image_np
 
         width, height = image.size
-        color = (0, 255, 0)
+        green = (0, 255, 0)
 
         y1 = int(height * detection_box[0])
         x1 = int(width * detection_box[1])
@@ -165,8 +165,22 @@ Motion detected
             image_with_detections,
             (x1, y1),
             (x2, y2),
-            color,
+            green,
             3
+        )
+
+        detection_label = "{0} {1}".format(labels[detection_classes[0]], detection_scores[0])
+        label_padding = 5
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(
+            image_with_detections,
+            detection_label,
+            (x1, y1 - label_padding),
+            font,
+            0.5,
+            green,
+            1,
+            cv2.LINE_AA
         )
 
         image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
