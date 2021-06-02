@@ -37,8 +37,6 @@ smtp_user = os.environ.get('SMTP_USER')
 smtp_password = os.environ.get('SMTP_PASSWORD')
 smtp_server = os.environ.get('SMTP_HOST')
 
-print('Setting up email server: {0}'.format(smtp_server))
-
 last_sent = 0
 
 # Parse a labels protobuf file into a python map
@@ -197,6 +195,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
+print("Connecting to MQTT: {0} / {1}".format(broker, topic))
 client.connect(broker, 1883, 60)
 
 client.loop_forever()
