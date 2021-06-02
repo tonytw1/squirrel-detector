@@ -499,3 +499,7 @@ The prediction always returns 100 predictions; the long tail is mostly useless w
 Where does this 100 sizing come from?
 
 
+```
+saved_model_cli show --dir ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/ --all
+```
+
