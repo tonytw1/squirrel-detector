@@ -8,6 +8,7 @@ RUN pip install pillow
 RUN pip install numpy
 RUN pip install requests
 RUN pip install protobuf
+RUN pip install opencv-python
 
 WORKDIR /usr/src/app
 COPY string_int_label_map_pb2.py .
