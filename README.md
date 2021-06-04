@@ -504,4 +504,4 @@ This was an order of magnitude faster than calling TensorFlow Serving.
 We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
 and send notifications.
 
-[listener](listener.py)
+[listener/listener.py](listener/listner.py)
