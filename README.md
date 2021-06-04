@@ -14,7 +14,10 @@
 - [Retraining](#retraining)
 - [Annotating images](#annotating-images)
 - [Training](#training)
+
 - [Putting it all together](#putting-it-all-together)
+
+- [Results](#results)
 
 ## TLDR
 
@@ -22,6 +25,10 @@ During lock down we were adopted by the squirrel which frequents our garden.
 
 Now we'd like to be notified when a squirrel is outside the window, so
 we built a Raspberry Pi webcam and trained a TensorFlow model to recognise squirrels.
+
+I learnt how to retrain an existing TensorFlow object detection model to recognise
+the animals visiting the garden and how to use that model from by our code.
+
 
 
 ## Hardware
@@ -31,7 +38,7 @@ We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspber
 
 This gives us Wifi, 1 core and 512Mb of memory.
 
-Thdule appears as a Video4Linux device.
+The camera module appears as a Video4Linux device.
 You can see device details with this command:
 ```
 v4l2-ctl --all
@@ -350,6 +357,11 @@ Comparing some of the locally available hardware:
 GTX 1050 Ti 4Gb ~ 1.0s
 ```
 
+Training appears to benefit from higher CPU frequency but less so from more CPU cores.
+GPUs are very beneficial but smaller desktop GPUs lack the RAM to load a large object detection model.
+
+
+
 ### Checkpoints
 
 As it trains TensorFlow periodically drops check points.
@@ -505,3 +517,12 @@ We can now write a script which will listen for the motion messages, call the Te
 and send notifications.
 
 [listener/listener.py](listener/listener.py)
+
+
+
+### Results 
+
+After been trained with 800 images and 5 classes the model gave some suprising good results. 
+Very good seperation of the classes. 
+Most detections with > 90% confidence were generally correct.
+
