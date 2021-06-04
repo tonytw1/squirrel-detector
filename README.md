@@ -448,23 +448,12 @@ After training we can export the model as a saved model.
 
 [retraining/export.bash](retraining/export.bash)
 
-This can then be loaded directly into TensorFlow Serving and is ready so detect our objects.
+The exported model is represented is a ~40Mb folder containing a protobuf representation of the model and it's training state.
 
-```
- curl http://localhost:8501/v1/models/squirrelnet
-{
- "model_version_status": [
-  {
-   "version": "1",
-   "state": "AVAILABLE",
-   "status": {
-    "error_code": "OK",
-    "error_message": ""
-   }
-  }
- ]
-}
-```
+[serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8](serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8)
+
+This is quite remarkable; we've been given a set of files which know how to detect animals.
+This saved model can then be loaded in TensorFlow Serving or imported directly into a python script.
 
 
 ### Who dis?
