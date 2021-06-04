@@ -13,6 +13,7 @@ import time
 import os
 import cv2
 import uuid
+import time
 
 import smtplib
 from email.mime.text import MIMEText
@@ -22,6 +23,9 @@ from email.mime.image import MIMEImage
 from google.protobuf import text_format
 import string_int_label_map_pb2
 from six import string_types
+
+print("Importing TensorFlow")
+import tensorflow as tf
 
 broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
@@ -38,6 +42,12 @@ smtp_password = os.environ.get('SMTP_PASSWORD')
 smtp_server = os.environ.get('SMTP_HOST')
 
 last_sent = 0
+
+# Load the model
+print("Loading model")
+saved_model = tf.saved_model.load('./models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
+model = saved_model.signatures['serving_default']
+print("Model loaded")
 
 # Parse a labels protobuf file into a python map
 # Adapted from retrain/models/research/object_detection/utils/label_map_util.py
@@ -58,16 +68,13 @@ def get_labels(label_map_path):
       label_map_dict[item.id] = item.name
   return label_map_dict
 
-# Given a PIL image call TensorFlow Serving to detect objects
-def predict(image_np):
-	payload = {"instances": [image_np.tolist()]}
-
-	predict_url = tensorflowserver_url + "/models/" + model + ":predict"
-	res = requests.post(predict_url, json=payload)
-
-	json = res.json();
-	predictions = json['predictions']
-	return predictions
+# Given a PIL image call TensorFlow to detect objects
+def predict_tf(image_np):
+	input_tensor = tf.convert_to_tensor(image_np)
+	input_tensor = input_tensor[tf.newaxis, ...]
+	print("Detecting")
+	prediction = model(input_tensor)
+	return prediction
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -89,11 +96,13 @@ def on_message(client, userdata, msg):
     image_filename =  message['image_file'].rsplit('/', 1)[1]
 
     image_np = numpy.array(image)
-    predictions = predict(image_np)
 
-    prediction = predictions[0];
-    detection_scores = prediction['detection_scores']
-    detection_classes = prediction['detection_classes']
+    start = time.time()
+    prediction = predict_tf(image_np)
+    duration = time.time() - start
+    print("Prediction took: {0}".format(duration))
+    detection_scores = prediction['detection_scores'].numpy().tolist()[0]
+    detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
     # Merge detection class with scores
     detected_classes = numpy.array(list(zip(detection_classes, detection_scores)))
@@ -101,9 +110,9 @@ def on_message(client, userdata, msg):
     from collections import defaultdict
 
     maxes = defaultdict(lambda: 0)
-    for detection in detected_classes:
-        c = detection[0]
-        s = detection[1]
+    for i in range(0, len(detection_scores)):
+        c = detection_classes[i]
+        s = detection_scores[i]
         i = maxes[c]
         if s > i:
            maxes[c] = s
@@ -112,11 +121,10 @@ def on_message(client, userdata, msg):
     max = 0
     max_index = 0
     for c in maxes:
-        if maxes[c] > 0.50:
-            label_display_name = labels[c]
-            detection_message = label_display_name + ": " + str(maxes[c])
-            print(detection_message)
-            client.publish("detections", detection_message)
+        label_display_name = labels[c]
+        detection_message = label_display_name + ": " + str(maxes[c])
+        print(detection_message)
+        client.publish("detections", detection_message)
         if maxes[c] > max:
             max = maxes[c]
             max_index = c
@@ -142,15 +150,16 @@ Motion detected
         """
         html = """\
 <p><pre>{0}</pre></p>
+<p>Took: {2}</p>
 <p><img src="cid:{1}"></p>
 <hr/>
         """
 
         plain_part = MIMEText(text, "plain")
-        html_part = MIMEText(html.format(m, cid), "html")
+        html_part = MIMEText(html.format(m, cid, duration), "html")
 
-        detection_boxes = prediction['detection_boxes']
-        detection_box = detection_boxes[0]
+        detection_boxes = prediction['detection_boxes'].numpy().tolist()
+        detection_box = detection_boxes[0][0]
 
         image_with_detections = image_np
 
@@ -213,3 +222,4 @@ print("Connecting to MQTT: {0} / {1}".format(broker, topic))
 client.connect(broker, 1883, 60)
 
 client.loop_forever()
+

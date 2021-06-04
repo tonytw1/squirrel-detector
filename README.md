@@ -469,15 +469,6 @@ Providing a the same image as a none tagged training image may also work but was
 
 
 
-### Putting it all together
-
-We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
-and send notifications.
-
-[listener](listener)
-
-
-
 ## Inference speed
 
 If we were doing this at scale we'd probably be interested in the inference preformance.
@@ -497,9 +488,20 @@ Any tuning should probably happen there first.
 The prediction always returns 100 predictions; the long tail is mostly useless which we're interested in the top 1 or 2 detections.
 
 Where does this 100 sizing come from?
-
-
 ```
 saved_model_cli show --dir ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/ --all
 ```
 
+It appears that the response format is very much baked into the model defination and probably can't be altered with query parameters.
+
+Without wanting to tackle this just now we can revert to using an in memory instance of the model in our message handler.
+This was an order of magnitude faster than calling TensorFlow Serving.
+
+
+
+### Putting it all together
+
+We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
+and send notifications.
+
+[listener](listener.py)
