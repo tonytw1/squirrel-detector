@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+# Listens for motion detected messages on an MQTT topic
+# Foreach motion message run TensorFlow object detection and publish the highest class scores 
+# onto another MQTT detections topic
+# If the detection score is high enough send a notification (email) showing the detection.
+
 import paho.mqtt.client as mqtt
 
 from io import BytesIO
@@ -30,8 +35,6 @@ import tensorflow as tf
 broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
 
-tensorflowserver_url = os.environ.get('TENSORFLOW_SERVING_URL')
-model = os.environ.get('MODEL')
 label_file = os.environ.get('LABELS')
 
 message_from = os.environ.get('EMAIL_FROM')
@@ -131,6 +134,7 @@ def on_message(client, userdata, msg):
 
     if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
+        # Slack would probably be more immediate 
         m = "";
         for c in maxes:
             label_display_name = labels[c]
