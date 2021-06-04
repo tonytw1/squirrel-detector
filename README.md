@@ -14,6 +14,10 @@
 - [Retraining](#retraining)
 - [Annotating images](#annotating-images)
 - [Training](#training)
+- [Exporting the model](#exporting-the-model)
+
+- [Inference speed](#inference-speed)
+- [Tweaking the model](#tweaking-the-model)
 
 - [Putting it all together](#putting-it-all-together)
 
@@ -456,19 +460,6 @@ This is quite remarkable; we've been given a set of files which know how to dete
 This saved model can then be loaded in TensorFlow Serving or imported directly into a python script.
 
 
-### Who dis?
-
-This unknown animal is detected with high confidence is an instance of another simular class.
-
-![Not magpie](not_magpie.png)
-
-Adding this interloper as a new class and retraining seems to resolve the issue.
-
-![Seagull](seagull.png)
-
-Providing a the same image as a none tagged training image may also work but wasn't tried.
-
-
 
 ## Inference speed
 
@@ -497,6 +488,27 @@ It appears that the response format is very much baked into the model defination
 
 Without wanting to tackle this just now we can revert to using an in memory instance of the model in our message handler.
 This was an order of magnitude faster than calling TensorFlow Serving.
+
+
+
+
+
+### Tweaking the model 
+
+### New classes
+
+Who dis? This unknown animal is detected with high confidence is an instance of another simular class.
+
+![Not magpie](not_magpie.png)
+
+Adding this type of animal as a new class and retraining seems to resolve the issue.
+
+![Seagull](seagull.png)
+
+Providing a the same image as a none tagged training image may also work but wasn't tried.
+
+
+### False positives
 
 
 
