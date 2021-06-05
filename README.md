@@ -456,7 +456,7 @@ The exported model is output as a ~40Mb folder containing a protobuf representat
 
 [serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8](serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8)
 
-This is quite remarkable; we've been given a set of files which know how to detect animals.
+This is quite remarkable; we've been given a set of files which knows how to detect animals.
 
 This saved model can be loaded in TensorFlow Serving or imported directly into a python script.
 
