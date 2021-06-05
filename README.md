@@ -458,7 +458,7 @@ The exported model is output as a ~40Mb folder containing a protobuf representat
 
 This is quite remarkable; we've been given a set of files which knows how to detect animals.
 
-This saved model can be loaded in TensorFlow Serving or imported directly into a python script.
+This saved model can be loaded into TensorFlow Serving or imported directly into a python script.
 
 
 
