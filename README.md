@@ -452,7 +452,7 @@ After training we can export the model as a saved model.
 
 [retraining/export.bash](retraining/export.bash)
 
-The exported model is represented is a ~40Mb folder containing a protobuf representation of the model and it's training state.
+The exported model is output as a ~40Mb folder containing a protobuf representation of the model and it's training state.
 
 [serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8](serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8)
 
