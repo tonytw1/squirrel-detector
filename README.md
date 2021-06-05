@@ -466,7 +466,7 @@ This saved model can be loaded in TensorFlow Serving or imported directly into a
 
 If we were doing this at scale we'd probably be interested in the inference performance.
 
-How to CPU and GPU compare for inference speed?
+How do CPU and GPU compare for inference speed?
 
 Using the python API as per `detect.py` we get get some rough CPU and GPU timings:
 
