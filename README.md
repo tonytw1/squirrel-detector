@@ -526,7 +526,7 @@ and send notifications.
 
 
 
-### Results 
+### Results 
 
 After training on ~800 images with 5 classes the model gave some surprisingly good results. 
 
