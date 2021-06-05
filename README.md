@@ -510,7 +510,7 @@ Adding this type of animal as a new class and retraining seems to resolve the is
 
 ![Seagull](seagull.png)
 
-Providing a the same image as a none tagged training image may also work but wasn't tried.
+Providing a the same image as a non tagged training image may also work but wasn't tried.
 
 
 ### False positives
