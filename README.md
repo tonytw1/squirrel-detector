@@ -464,34 +464,38 @@ This saved model can be loaded in TensorFlow Serving or imported directly into a
 
 ## Inference speed
 
-If we were doing this at scale we'd probably be interested in the inference preformance.
+If we were doing this at scale we'd probably be interested in the inference performance.
 
-How to CPU and GPU compare for inference time?
-Using the python API as in detect.py some rough inference times are for CPU and GPU are:
+How to CPU and GPU compare for inference speed?
+
+Using the python API as per `detect.py` we get get some rough CPU and GPU timings:
 
 ```
 3.4 GHz CPU ~ 99 ms
 GT 1030 GPU (2Gb RAM) ~ 79 ms
 ```
 
-Slightly quicker on the GPU but the difference isn't impactful when detect_rest.py takes ~ 1000 ms.
+This small GPU returns slightly quicker and probably uses less energy than the CPU.
 
-Most of the latenty is probably marshalling the enormous JSON response (~ 6Mb).
+But the time difference is small compared to the total latency of our TensorFlow serving call which is taking ~ 1400 ms.
+
+Most of the latency is probably marshalling the enormous JSON response (~ 6Mb).
 Any tuning should probably happen there first.
-The prediction always returns 100 predictions; the long tail is mostly useless which we're interested in the top 1 or 2 detections.
+
+The prediction always returns 100 predictions and many fields which we are not using. 
+The long tail is mostly useless which we're interested in the top 1 or 2 detections.
 
 Where does this 100 sizing come from?
+
 ```
 saved_model_cli show --dir ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/ --all
 ```
 
-It appears that the response format is very much baked into the model defination and probably can't be altered with query parameters.
+It appears that the response format is very much baked into the model definition and can't be altered with query parameters.
 
-Without wanting to tackle this just now we can revert to using an in memory instance of the model in our message handler.
+Not wanting to tackle this just now we can revert to using an in memory instance of the model in our message handler.
+
 This was an order of magnitude faster than calling TensorFlow Serving.
-
-
-
 
 
 ### Tweaking the model 
@@ -524,7 +528,9 @@ and send notifications.
 
 ### Results 
 
-After been trained with 800 images and 5 classes the model gave some suprising good results. 
-Very good seperation of the classes. 
-Most detections with > 90% confidence were generally correct.
+After training on ~800 images with 5 classes the model gave some surprisingly good results. 
+
+Separation of the classes was very good. Most detections with > 90% confidence were correct.
+
+![Detected fox](images/detected_fox.jpg)
 
