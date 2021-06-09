@@ -1,18 +1,20 @@
-FROM python:3
+FROM tensorflow/tensorflow
 
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y python3-opencv
+RUN apt-get install libglib2.0-0
+RUN apt-get install -y libgl1-mesa-glx
 
 RUN pip install paho-mqtt
 RUN pip install pillow
-RUN pip install numpy
 RUN pip install requests
 RUN pip install protobuf
 RUN pip install opencv-python
 
 WORKDIR /usr/src/app
+COPY models/ ./models/
 COPY string_int_label_map_pb2.py .
 COPY squirrelnet_label_map.pbtxt . 
 COPY listener.py .
+
 CMD ["listener.py"]
 ENTRYPOINT ["python3"]
