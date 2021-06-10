@@ -534,3 +534,4 @@ Separation of the classes was very good. Most detections with > 90% confidence w
 
 ![Detected fox](images/detected_fox.jpg)
 
+![Detected fox](images/detected_fox2.jpg)
