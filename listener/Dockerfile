@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow
+FROM tensorflow/tensorflow:latest-gpu
 
 RUN apt-get update
 RUN apt-get install libglib2.0-0
