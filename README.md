@@ -312,7 +312,8 @@ cd Squirrels-TFRecords-export
 mkdir training
 mkdir eval
 mv *.tfrecord training
-mv training/7* eval
+mv training/*0-00.tfrecord eval
+mv training/*1-00.tfrecord eval
 ```
 
 A better splitting would probably try to get a representative spread of classes into the evaluation folder.
