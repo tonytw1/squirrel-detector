@@ -11,10 +11,9 @@ RUN pip install protobuf
 RUN pip install opencv-python
 
 WORKDIR /usr/src/app
-COPY models/ ./models/
-COPY string_int_label_map_pb2.py .
-COPY squirrelnet_label_map.pbtxt . 
-COPY listener.py .
+COPY ./models/ ./models/
+COPY listener/string_int_label_map_pb2.py .
+COPY listener/listener.py .
 
 CMD ["listener.py"]
 ENTRYPOINT ["python3"]
