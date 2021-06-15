@@ -525,6 +525,9 @@ and send notifications.
 
 [listener/listener.py](listener/listener.py)
 
+We'll use Cloud Build to package this as a Docker image so that all the differcult TensorFlow dependencies and be contained.
+
+[listener/cloudbuild.yaml](listener/cloudbuild.yaml)
 
 
 ### Results 
