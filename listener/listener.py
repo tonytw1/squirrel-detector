@@ -34,6 +34,7 @@ import tensorflow as tf
 
 broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
+detections_topic = os.environ.get('DETECTIONS_MQTT_TOPIC')
 
 label_file = os.environ.get('LABELS')
 
@@ -127,7 +128,7 @@ def on_message(client, userdata, msg):
         label_display_name = labels[c]
         detection_message = label_display_name + ": " + str(maxes[c])
         print(detection_message)
-        client.publish("detections", detection_message)
+        client.publish(detections_topic, detection_message)
         if maxes[c] > max:
             max = maxes[c]
             max_index = c
@@ -215,6 +216,7 @@ Motion detected
         server.login(smtp_user, smtp_password)
         server.sendmail(message_from, message_to, message.as_string())
         print("Sent notification: " + subject)
+
         # Update rate limit watermark
         last_sent = time.time()
 
