@@ -126,7 +126,7 @@ def on_message(client, userdata, msg):
     max_index = 0
     for c in maxes:
         label_display_name = labels[c]
-        detection_message = label_display_name + ": " + str(maxes[c])
+        detection_message = label_display_name + ":" + str(maxes[c])
         print(detection_message)
         client.publish(detections_topic, detection_message)
         if maxes[c] > max:
