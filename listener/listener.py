@@ -37,6 +37,8 @@ broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
 detections_topic = os.environ.get('DETECTIONS_MQTT_TOPIC')
 
+client = mqtt.Client()
+
 last_detection = 0
 
 label_file = os.environ.get('LABELS')
@@ -91,12 +93,18 @@ def on_connect(client, userdata, flags, rc):
 
 labels = get_labels(label_file)
 
-def send_zeros(client):
-    print("Considering Sending zero")	
-    if (time.time() - last_detection >= 30): 
-        print("Really sending zeros")
+def send_zeros():
+    global last_detection
+    delta = time.time() - last_detection
+    if (delta >= 10):
+        for l in labels:
+           label_display_name = labels[l]
+           detection_message = label_display_name + ":0.0"
+           print(detection_message)
+           client.publish(detections_topic, detection_message)
 
 def on_message(client, userdata, msg):
+    global last_detection
     global last_sent
     print("Message recieved from topic: " + msg.topic)
     message = json.loads(msg.payload)
@@ -143,9 +151,10 @@ def on_message(client, userdata, msg):
             max_index = c
 
     # Schedule broadcast of a non motion message 
-    t = threading.Timer(10, send_zeros(client))
-    t.start() 
-  
+    print("Scheduling send zeros")
+    t = threading.Timer(10, send_zeros)
+    t.start()
+
     if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         # Slack would probably be more immediate 
