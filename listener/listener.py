@@ -19,6 +19,7 @@ import os
 import cv2
 import uuid
 import time
+import threading
 
 import smtplib
 from email.mime.text import MIMEText
@@ -35,6 +36,8 @@ import tensorflow as tf
 broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
 detections_topic = os.environ.get('DETECTIONS_MQTT_TOPIC')
+
+last_detection = 0
 
 label_file = os.environ.get('LABELS')
 
@@ -88,11 +91,17 @@ def on_connect(client, userdata, flags, rc):
 
 labels = get_labels(label_file)
 
+def send_zeros(client):
+    print("Considering Sending zero")	
+    if (time.time() - last_detection >= 30): 
+        print("Really sending zeros")
+
 def on_message(client, userdata, msg):
     global last_sent
     print("Message recieved from topic: " + msg.topic)
     message = json.loads(msg.payload)
     print("Motion event found: " + message['image_file'])
+    last_detection = time.time()
 
     # Decode the image payload
     base64_image = message['image']
@@ -133,6 +142,10 @@ def on_message(client, userdata, msg):
             max = maxes[c]
             max_index = c
 
+    # Schedule broadcast of a non motion message 
+    t = threading.Timer(10, send_zeros(client))
+    t.start() 
+  
     if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         # Slack would probably be more immediate 
