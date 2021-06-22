@@ -96,7 +96,7 @@ labels = get_labels(label_file)
 def send_zeros():
     global last_detection
     delta = time.time() - last_detection
-    if (delta >= 10):
+    if (delta >= 30):
         for l in labels:
            label_display_name = labels[l]
            detection_message = label_display_name + ":0.0"
@@ -152,7 +152,7 @@ def on_message(client, userdata, msg):
 
     # Schedule broadcast of a non motion message 
     print("Scheduling send zeros")
-    t = threading.Timer(10, send_zeros)
+    t = threading.Timer(30, send_zeros)
     t.start()
 
     if (max > 0.80) & (time.time() - last_sent > 60):
