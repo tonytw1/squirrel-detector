@@ -155,7 +155,7 @@ def on_message(client, userdata, msg):
     t = threading.Timer(30, send_zeros)
     t.start()
 
-    if (max > 0.00) & (time.time() - last_sent > 30):
+    if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         # Slack would probably be more immediate 
         m = "";
