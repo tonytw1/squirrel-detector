@@ -346,7 +346,7 @@ A better splitting would probably try to get a representative spread of classes 
 
 The Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
 
-The []installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
+The [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
 seem to have suffered from python and CUDA dependency rot.
 
 Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
@@ -547,6 +547,12 @@ Providing a the same image as a non tagged training image may also work but wasn
 
 ### False positives
 
+Background clutter, objects like washing and shadows were often detected as objects.
+This can be improved by including images with none of the object classes in the training set.
+
+Presumably this applies a loss to these incorrect predictions which can nudge the training in a different direction.
+
+![Background with no interesting objects](background.png)
 
 
 ### Putting it all together
