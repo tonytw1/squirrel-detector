@@ -4,10 +4,11 @@ import os
 import subprocess
 import json
 
-# Capture calls from Motion's on_picture_save event and publish them on a MQTT topic
+# Capture calls from Motion's on_picture_save event and publishes them to a MQTT topic
+# in JSON format with the image base64 encoded.
 num_argv = len(sys.argv)
 if num_argv >=4:
-	# Image filepath and dimensions pass to us
+	# Image filepath and dimensions have been pass to us
 	# Do we have a readable image file path?
 	image_filepath = sys.argv[1];
 	if os.access(image_filepath, os.R_OK):
@@ -23,7 +24,7 @@ if num_argv >=4:
 		}
 
 		if (num_argv == 8):
-			# Bounding box was also beeb past to us
+			# A bounding box was also been past to us
 			message['bounding_box_center_x'] = sys.argv[4]
 			message['bounding_box_center_y'] = sys.argv[5]
 			message['bounding_box_width'] = sys.argv[6]

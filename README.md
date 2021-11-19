@@ -2,7 +2,14 @@
 
 ![Mr Squirrel](images/squirrel.jpg)
 
-- [TLDR](#tldr)
+During lock down we were adopted by the squirrel who frequents our garden.
+
+Now we'd like to be notified when a squirrel is outside the window, so
+we built a Raspberry Pi webcam and trained a TensorFlow model to recognise squirrels.
+
+I learnt how to retrain an existing TensorFlow object detection model to recognise
+new objects and how to use that model from by our code.
+
 - [Hardware](#hardware)
 - [Detecting motion and capturing images](#detecting-motion-and-capturing-images)
 - [Not squirrel](https://github.com/tonytw1/squirrel-detector#not-squirrel)
@@ -23,24 +30,13 @@
 
 - [Results](#results)
 
-## TLDR
-
-During lock down we were adopted by the squirrel which frequents our garden.
-
-Now we'd like to be notified when a squirrel is outside the window, so
-we built a Raspberry Pi webcam and trained a TensorFlow model to recognise squirrels.
-
-I learnt how to retrain an existing TensorFlow object detection model to recognise
-the animals visiting the garden and how to use that model from by our code.
-
-
 
 ## Hardware
 
 We're using a [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/) with the
 [Camera Module V2](https://www.raspberrypi.org/products/camera-module-v2/).
 
-This gives us Wifi, 1 core and 512Mb of memory.
+This gives us Wifi, 1 CPU core and 512Mb of memory.
 
 The camera module appears as a Video4Linux device.
 You can see device details with this command:
@@ -49,23 +45,28 @@ v4l2-ctl --all
 ```
 
 ## Detecting motion and capturing images
-[Motion](https://motion-project.github.io) is available as a Raspberry Pi package.
-Ite camera mo does a good job of detecting movement and creating image files and bounding boxes.
 
-Here's an example of Motion detecting and bounding a movement:
+The camera needs to be motion sensitive.
+
+[Motion](https://motion-project.github.io) handles motion detection and is available as a Raspberry Pi package.
+It does a good job of detecting movement and can output image files and bounding boxes.
+
+Here's an example of Motion detecting motion and generating a bounding box:
 ![This is not a squirrel](images/not_squirrel.jpg)
 
 We'd like Motion to detect bounding boxes but not draw them on the saved image files.
-This configuration line seems todo this:
+This line in the Motion configuration file seems todo this:
 ```
 locate_motion_mode preview
 ```
 
-Motion seems to have an issue with the Pi camera's auto exposure mode.
-This can be worked around by setting the camera to 1024 x 640.
+Motion seems to have an issue with the Pi camera's auto exposure mode; the exposure will swing back and forth between
+too light and too dark.
 
-Our camera is connected to a small device with limited processing capability.
-We want to send the image somewhere where a more capable machine can look at it.
+This can be worked around by setting the capture resolution to 1024 x 640. I do not know why this works.
+
+The Pi Zero which the camera is connected to is a small device with limited processing capability.
+We'll want to send the image somewhere where a more capable machine can look at it.
 
 Let's use a python script to catch the Motion events and publish them.
 
@@ -79,10 +80,11 @@ We can hook these together with this configuration line:
 We'll need to encode the image file for inclusion in a message.
 Base64 encoding should be enough.
 
-We'll use MQTT as the message format. MQTT is really practical about message sizes limits.
+We'll use [MQTT](https://mqtt.org) to transport the messages.
 We can publish the motion messages to a MQTT topic which other machines can subscribe to.
+MQTT is really practical about message sizes limits.
 
-This happens in the script `on_motion_detected.py`.
+This alll happens in the script `on_motion_detected.py`.
 
 [on_motion_detected.py](on_motion_detected.py)
 
@@ -99,13 +101,14 @@ We'll want to categorise the objects in the motion messages so that we can filte
 
 We have a message containing a still image with a bounding box enclosing an area of motion.
 We want to phrase this and maybe crop to the bounding box.
-We can then send the image to an object detection API.
+
+We can then send the image to an object detection API to this.
 
 
 ## Object detection APIs
 
-How are we going to classify the moving objects Motion has detected?
-We'll like to pass the area of interest to an object detection API.
+Object detection APIs take an image and attempt to identify the objects visible in that image.
+If we can find an API which can identify squirrels, we'll be done.
 
 
 ### Google Vision
@@ -113,22 +116,24 @@ We'll like to pass the area of interest to an object detection API.
 Google Vision seems to be the gold standard for object detection and has a nice python API.
 It also seems to know about squirrels.
 
-Here's a script to detect objects an image file and it's sample output.
+Here's a script to detect objects an image file and it's sample output:
 
 [google-vision.py](google-vision.py)
 
 ![Google Vision output](google_vision.png)
 
+Google Vision clearly knows about squirrels.
+
 
 ### Local alternatives?
 
-The free tier for Google Vision isn't suited for continuous use.
+The free tier for Google Vision is less suited to continuous use.
 Is there anything we can run locally?
 
 Pretrained TensorFlow object detection models are available and running one locally might be an interesting side quest.
 
 There are 2 interesting problems here. Can we find a model which can detect the objects we're interested in and
-can we easily run it and call it locally.
+can we easily run it and call it locally?
 
 The model will need to be wrapped in some sort of API so we can call it from our message handling script.
 
@@ -146,19 +151,21 @@ Working on a local machine I was blocked almost immediately with an error while 
 
 This could be a mismatch between TensorFlow 2.5 and the available examples.
 
-Retreating to [https://colab.research.google.com](Google Colab) notebooks offered a known good development environment to get started in.
+Rather than get stuck trying to resolve dependencies we can retreat to a [Google Colab](https://colab.research.google.com) notebook.
+Colab gives us a known good development environment to get started in.
 
 
 ### Testing in Google Colab
 
-Alot of data development work goes on in notebook environments like Jupyter and [https://colab.research.google.com](Google Colab). The data community have discovered a really
-interesting way of working here. I'd encourage an software developer who haven't seen this before to have a look.
+Alot of data development work happens in notebook environments like Jupyter and Colab.
 
-With a saved model imported into our Colab notebook we can load one of our test images and ask the model to predict the visible objects.
+The data community have discovered a really interesting way of working here. I'd encourage any software developer who haven't seen this before to have a look.
+
+With an existing object detection model imported into our Colab notebook we can load one of our test images and ask the model to predict the visible objects.
 
 ![Colan prediction](colab.png)
 
-Requesting a prediction.
+Requesting a prediction:
 
 ![Model predict](predict.png)
 
@@ -167,14 +174,16 @@ The prediction returns a large map of results.
 ![Prediction results](predictions.png)
 
 `detection_classes` and `detection_scores` are interesting.
+
 This turns out to mean a 73% confidence of a class 17 object.
 
-What are the classes and why are the values all below 100?
+What does this mean? What are classes and why are the values all below 100?
 
-The saved model was trained on the COCO image set.
-It was only taught about 90 unique objects and the class ids refer to one of them.
+The saved model was trained on the [COCO image set](https://cocodataset.org).
+This training data contains 91 unique objects (or classes).
+The class ids refer to one of these object types.
 
-The COCO labels are available in the file `mscoco_label_map.pbtxt`.
+The COCO labels are available in the file [mscoco_label_map.pbtxt](https://github.com/tensorflow/models/blob/master/research/object_detection/data/mscoco_label_map.pbtxt):
 
 ```
 item {
@@ -205,18 +214,23 @@ Looking up class 17 in the label file we find `cat`.
 Close but not quite right. It looks like the model doesn't know about squirrels!
 
 Looking in the COCO labels file confirms that squirrels are not one of the classes this model was trained on.
+The model can't identify squirrels because it has not been trained on examples of what squirrels look like.
+
 
 ### Local detection script
 
-Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction.
-There is plenty in there which I don't yet understand yet.
+Back porting what we learnt in the Colab worksheet we can create a local script which can make the same prediction
+as the Colab worksheet.
+
+There is plenty in here which I don't yet understand yet:
 
 [detect.py](detect.py)
 
 
 ### Resolving labels
 
-TensorFlow gives the impression that resolving class ids into labels is not it's concern.
+TensorFlow gives the impression that resolving class ids into labels (ie. 17 -> cat) is not it's concern.
+
 We'll need to spike out a way to user the labels file to resolve readable name for classes in the predictions returned from TensorFlow.
 
 [labels/labels.py](labels/labels.py)
@@ -234,16 +248,18 @@ Let's move onto productionising what we have on the assumption we'll be able to 
 
 ## Running a model with TensorFlow Serving
 
-[https://www.tensorflow.org/tfx/serving/docker](TensorFlow Serving) makes it easy to deploy new algorithms and experiments, while keeping the same server architecture and APIs.
+[TensorFlow Serving](https://www.tensorflow.org/tfx/serving/docker) claims to make it easy to deploy new algorithms and experiments,
+while keeping the same server architecture and APIs.
 
 This looks exactly what we want. A way to deploy a saved model behind a REST API.
 
 A Docker container is provided. 
-We use this as a base image to produce an image with our model baked into it.
+We can use this as a base image to produce an image with our model baked into it:
 
 [serving/Dockerfile](serving/Dockerfile)
 
 Testing locally:
+
 `
 docker run -p 8501:8501 -e MODEL_NAME=ssd_mobilenet_v2_320x320_coco17_tpu-8 eelpie/tensorflowserving
 `
@@ -264,22 +280,28 @@ Check the models is available at `http://localhost:8501/v1/models/ssd_mobilenet_
     ]
 }
 ```
-Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into our script.
+Now we can ask for a prediction with an HTTP call rather than importing the TensorFlow model into our script:
 
 [detect_rest.py](detect_rest.py)
 
 
 ## Retraining
 
-Our downloaded model doesn't know about squirrels. We need to retrain it.
+Our existing model doesn't know about squirrels. We need to retrain it.
 
 
 ### Collecting training data
 
-Unlike humans animals won't generally give out personally identifying informational for free.
-They will trade it for nuts though.
+We need to teach our object detection model about the objects we are interested in (squirrels) by
+showing it many example images with those objects in them.
 
-Collecting several day's images gave a collection of several hundred training images with examples of most of the garden animals.
+Unlike humans, animals won't generally give out personally identifying informational for free.
+They will trade it for treats though.
+Leaving some treats outside the window and saving the image files captured by Motion provides
+us with some initial training images.
+
+Collecting several day's images gave a collection of several hundred images with examples of most of the garden animals.
+
 
 
 ### Annotating images
@@ -304,7 +326,8 @@ VoTT can export to the TensorFlow Records format for direct import into TensorFl
 
 ### Split the data
 
-We need to reserve some of our test data for testing of our trained model.
+We need to reserve some of our test data for testing our retrained model.
+
 Just like a real exam it needs to be tested on questions it's not seen before.
 
 ```
@@ -323,27 +346,35 @@ A better splitting would probably try to get a representative spread of classes 
 
 The Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
 
-The [https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md](installation instructions) seem to have suffered from python and CUDA dependency rot.
+The []installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
+seem to have suffered from python and CUDA dependency rot.
 
 Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
 
-My attempts to working around this are documented in [retraining/Dockerfile](retraining/Dockerfile).
+My attempts at working around this are documented in [retraining/Dockerfile](retraining/Dockerfile).
 
 
 ### Training
 
-With our test data prepared, we need to add a pretrained existing model,
+With our training data prepared we need to add a pretrained existing model,
 a training pipeline to describe the training task and a checkpoint to describe the training the existing model has already undergone.
 
-We start the training process and over the course of several hours TensorFlow will attempt to discover the model parameters
-which minimise prediction error (or loss) against our training images.
+The intuition here is that our existing model has been extensively trained already and has some ability at detecting objects in general.
+By preserving this existing training and introducing a new set of objects we should be able to generate a model
+which works for our objects far quicker than if we tried to train from scratch.
+
+The TensorFlow checkpoint which came with the existing model encapsulates it's existing training.
+
+When we start the training process, over the course of several hours TensorFlow will attempt to readjust the model
+parameters to minimise prediction error (or loss) against our new training images.
+
 
 [retraining/train.bash](retraining/train.bash)
+
 
 The loss value would be expected to tread downwards during training; probably towards a value between 0.0 and 1.0.
 
 ![Loss converging](loss-converging.png)
-
 
 
 While training TensorFlow will periodically log out a progress report.
