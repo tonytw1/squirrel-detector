@@ -30,8 +30,13 @@ from google.protobuf import text_format
 import string_int_label_map_pb2
 from six import string_types
 
-print("Importing TensorFlow")
+import logging
+import sys
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+logging.info("Importing TensorFlow")
 import tensorflow as tf
+logging.info("TensorFlow imported")
 
 broker = os.environ.get('MOTION_MQTT_HOST')
 topic = os.environ.get('MOTION_MQTT_TOPIC')
@@ -53,10 +58,10 @@ smtp_server = os.environ.get('SMTP_HOST')
 last_sent = 0
 
 # Load the model
-print("Loading model")
+logging.info("Loading model")
 saved_model = tf.saved_model.load('./models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
 model = saved_model.signatures['serving_default']
-print("Model loaded")
+logging.info("Model loaded")
 
 # Parse a labels protobuf file into a python map
 # Adapted from retrain/models/research/object_detection/utils/label_map_util.py
@@ -81,12 +86,12 @@ def get_labels(label_map_path):
 def predict_tf(image_np):
 	input_tensor = tf.convert_to_tensor(image_np)
 	input_tensor = input_tensor[tf.newaxis, ...]
-	print("Detecting")
+	logging.info("Detecting")
 	prediction = model(input_tensor)
 	return prediction
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    logging.info("Connected with result code "+str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(topic)
@@ -100,15 +105,15 @@ def send_zeros():
         for l in labels:
            label_display_name = labels[l]
            detection_message = label_display_name + ":0.0"
-           print(detection_message)
+           logging.info(detection_message)
            client.publish(detections_topic, detection_message)
 
 def on_message(client, userdata, msg):
     global last_detection
     global last_sent
-    print("Message recieved from topic: " + msg.topic)
+    logging.info("Message received from topic: " + msg.topic)
     message = json.loads(msg.payload)
-    print("Motion event found: " + message['image_file'])
+    logging.info("Motion event found: " + message['image_file'])
     last_detection = time.time()
 
     # Decode the image payload
@@ -121,7 +126,7 @@ def on_message(client, userdata, msg):
     start = time.time()
     prediction = predict_tf(image_np)
     duration = time.time() - start
-    print("Prediction took: {0}".format(duration))
+    logging.info("Prediction took: {0}".format(duration))
     detection_scores = prediction['detection_scores'].numpy().tolist()[0]
     detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
@@ -144,14 +149,14 @@ def on_message(client, userdata, msg):
     for c in maxes:
         label_display_name = labels[c]
         detection_message = label_display_name + ":" + str(maxes[c])
-        print(detection_message)
+        logging.info(detection_message)
         client.publish(detections_topic, detection_message)
         if maxes[c] > max:
             max = maxes[c]
             max_index = c
 
     # Schedule broadcast of a non motion message 
-    print("Scheduling send zeros")
+    logging.info("Scheduling send zeros")
     t = threading.Timer(30, send_zeros)
     t.start()
 
@@ -237,7 +242,7 @@ Motion detected
         server = smtplib.SMTP(smtp_server, 587)
         server.login(smtp_user, smtp_password)
         server.sendmail(message_from, message_to, message.as_string())
-        print("Sent notification: " + subject)
+        logging.info("Sent notification: " + subject)
 
         # Update rate limit watermark
         last_sent = time.time()
@@ -246,7 +251,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-print("Connecting to MQTT: {0} / {1}".format(broker, topic))
+logging.info("Connecting to MQTT: {0} / {1}".format(broker, topic))
 client.connect(broker, 1883, 60)
 
 client.loop_forever()
