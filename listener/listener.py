@@ -32,7 +32,7 @@ from six import string_types
 
 import logging
 import sys
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s')
 
 logging.info("Importing TensorFlow")
 import tensorflow as tf
