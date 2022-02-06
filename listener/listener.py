@@ -192,51 +192,6 @@ def annotateImage(prediction, image, image_np):
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
 
-
-def send_email(max_index, detections, image_filename, img_byte_arr, duration):
-    # Send an email notification for this event
-    m = ""
-    for c in detections:
-        label_display_name = labels[c]
-        detection_line = label_display_name + ": " + str(detections[c])
-        m = m + detection_line
-
-    subject = 'Motion detected - {0} {1}'.format(
-        labels[max_index], detections[max_index])
-    cid = image_filename + uuid.uuid4().hex
-
-    message = MIMEMultipart("alternative")
-    message["Subject"] = subject
-    message["From"] = message_from
-    message["To"] = message_to
-
-    text = """\
-Motion detected
-        """
-    html = """\
-<p><pre>{0}</pre></p>
-<p>Took: {2}</p>
-<p><img src="cid:{1}"></p>
-<hr/>
-        """
-    plain_part = MIMEText(text, "plain")
-    html_part = MIMEText(html.format(m, cid, duration), "html")
-
-    image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
-    image_attachment.add_header(
-        'Content-Disposition', 'attachment; filename={0}'.format(image_filename))
-    image_attachment.add_header('Content-ID', '<{}>'.format(cid))
-
-    message.attach(plain_part)
-    message.attach(html_part)
-    message.attach(image_attachment)
-
-    server = smtplib.SMTP(smtp_server, 587)
-    server.login(smtp_user, smtp_password)
-    server.sendmail(message_from, message_to, message.as_string())
-    logging.info("Sent notification: " + subject)
-
-
 def on_message(client, userdata, msg):
     global last_detection
     global last_sent
@@ -293,14 +248,6 @@ def on_message(client, userdata, msg):
     logging.info("Scheduling send zeros")
     t = threading.Timer(30, send_zeros)
     t.start()
-
-    logging.info("Best prediction is: " + str(max))
-    if (max > 0.20) & (time.time() - last_sent > 60):
-        send_email(max_index, detections, image_filename,
-                   annotated_image_byte_arr, duration)
-        # Update rate limit watermark
-        last_sent = time.time()
-
 
 client = mqtt.Client()
 client.on_connect = on_connect
