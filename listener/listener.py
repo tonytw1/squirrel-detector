@@ -3,11 +3,16 @@
 # Listens for motion detected messages on an MQTT topic
 # The motion message has a JSON body:
 # {
-# 	'image': BASE64 encoded JPEG
+#   'image': BASE64 encoded JPEG
 #   'image_file': Original path to the image file on camera device
 # }
 #
 # Foreach motion message run TensorFlow object detection and publish the highest class scores 
+# {
+#   'detections': {} # Map of class detection scoress
+#   'image': BASE64 encoded JPEG
+# }
+#
 # onto another MQTT detections topic
 # If the detection score is high enough send a notification (email) showing the detection.
 
@@ -45,6 +50,7 @@ import tensorflow as tf
 logging.info("TensorFlow imported")
 
 broker = os.environ.get('MOTION_MQTT_HOST')
+port = int(os.environ.get('MOTION_MQTT_PORT'))
 topic = os.environ.get('MOTION_MQTT_TOPIC')
 detections_topic = os.environ.get('DETECTIONS_MQTT_TOPIC')
 
@@ -104,22 +110,23 @@ def on_connect(client, userdata, flags, rc):
 
 labels = get_labels(label_file)
 
-def send_detection_message(detections) {
-    for c in detections:
-        label_display_name = labels[c]
-        detection_message = label_display_name + ":" + str(detections[c])
-        logging.info(detection_message)
-        client.publish(detections_topic, detection_message)
-}
+def send_detection_message(detections, image):
+    message = {
+       'detections': detections,
+       'image': image
+    }
+    detection_message = json.dumps(message) 
+    logging.info("Sending detection message: " + detection_message)
+    client.publish(detections_topic, detection_message)
 
 def send_zeros():
     global last_detection
     delta = time.time() - last_detection
     if (delta >= 30):
         zeros = {}
-        for c in labels:
+        for c in labels.values():
             zeros[c] = 0.0
-        send_detection_message(zeros)
+        send_detection_message(zeros, None)
 
 def on_message(client, userdata, msg):
     global last_detection
@@ -157,7 +164,7 @@ def on_message(client, userdata, msg):
            detections[c] = s
 
     # Publish notifications for strong class detections and find the max detection strength
-    send_detection_message(detections)
+    send_detection_message(detections, base64_image)
 
     # Find the best detection
     max = 0
@@ -263,7 +270,8 @@ client.on_connect = on_connect
 client.on_message = on_message
 
 logging.info("Connecting to MQTT: {0} / {1}".format(broker, topic))
-client.connect(broker, 1883, 60)
+client.connect(broker, port, 60)
+send_zeros()
 
 client.loop_forever()
 
