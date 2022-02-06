@@ -71,7 +71,7 @@ last_sent = 0
 
 # Load the model
 logging.info("Loading model")
-saved_model = tf.saved_model.load('./models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
+saved_model = tf.saved_model.load('../models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
 model = saved_model.signatures['serving_default']
 logging.info("Model loaded")
 
@@ -110,13 +110,15 @@ def on_connect(client, userdata, flags, rc):
 
 labels = get_labels(label_file)
 
-def send_detection_message(detections, image):
+def send_detection_message(detections, image, annotated_image):
     message = {
        'detections': detections,
-       'image': image
+       'image': image,
+       'annotated_image': annotated_image
     }
     detection_message = json.dumps(message) 
-    logging.info("Sending detection message: " + detection_message)
+    logging.info("Sending detection message")
+    # TODO stream to mqtt
     client.publish(detections_topic, detection_message)
 
 def send_zeros():
@@ -126,7 +128,56 @@ def send_zeros():
         zeros = {}
         for c in labels.values():
             zeros[c] = 0.0
-        send_detection_message(zeros, None)
+        send_detection_message(zeros, None, None)
+
+def annotateImage(prediction, image, image_np):
+        # Given a prediction and the numpy image
+        # annotate that image with a bounding box for the best prediction
+        # Returns a JPEG byte array
+        detection_boxes = prediction['detection_boxes'].numpy().tolist()
+        detection_scores = prediction['detection_scores'].numpy().tolist()[0]
+        detection_classes = prediction['detection_classes'].numpy().tolist()[0]
+
+        detection_box = detection_boxes[0][0]
+
+        image_with_detections = image_np;
+
+        width, height = image.size
+        green = (0, 255, 0)
+
+        y1 = int(height * detection_box[0])
+        x1 = int(width * detection_box[1])
+        y2 = int(height * detection_box[2])
+        x2 = int(width * detection_box[3])
+        image_with_detections = cv2.rectangle(
+            image_with_detections,
+            (x1, y1),
+            (x2, y2),
+            green,
+            3
+        )
+
+        detection_label = "{0} {1}".format(labels[detection_classes[0]], detection_scores[0])
+        label_padding = 5
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(
+            image_with_detections,
+            detection_label,
+            (x1, y1 - label_padding),
+            font,
+            0.5,
+            green,
+            1,
+            cv2.LINE_AA
+        )
+
+        image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
+
+        img_byte_arr = io.BytesIO()
+        image_with_detections_pil.save(img_byte_arr, format='JPEG')
+        img_byte_arr = img_byte_arr.getvalue()
+        return img_byte_arr
+
 
 def on_message(client, userdata, msg):
     global last_detection
@@ -163,8 +214,12 @@ def on_message(client, userdata, msg):
         if s > i:
            detections[c] = s
 
+
+    annotated_image_byte_arr = annotateImage(prediction, image, image_np)
+
     # Publish notifications for strong class detections and find the max detection strength
-    send_detection_message(detections, base64_image)
+    base64_annotated_image = base64.b64encode(annotated_image_byte_arr).decode("ascii")
+    send_detection_message(detections, base64_image, base64_annotated_image)
 
     # Find the best detection
     max = 0
@@ -179,7 +234,9 @@ def on_message(client, userdata, msg):
     t = threading.Timer(30, send_zeros)
     t.start()
 
-    if (max > 0.80) & (time.time() - last_sent > 60):
+
+    logging.info("Best prediction is: " + str(max))
+    if (max > 0.20) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         # Slack would probably be more immediate 
         m = ""
@@ -205,49 +262,10 @@ Motion detected
 <p><img src="cid:{1}"></p>
 <hr/>
         """
-
         plain_part = MIMEText(text, "plain")
         html_part = MIMEText(html.format(m, cid, duration), "html")
 
-        detection_boxes = prediction['detection_boxes'].numpy().tolist()
-        detection_box = detection_boxes[0][0]
-
-        image_with_detections = image_np
-
-        width, height = image.size
-        green = (0, 255, 0)
-
-        y1 = int(height * detection_box[0])
-        x1 = int(width * detection_box[1])
-        y2 = int(height * detection_box[2])
-        x2 = int(width * detection_box[3])
-        image_with_detections = cv2.rectangle(
-            image_with_detections,
-            (x1, y1),
-            (x2, y2),
-            green,
-            3
-        )
-
-        detection_label = "{0} {1}".format(labels[detection_classes[0]], detection_scores[0])
-        label_padding = 5
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(
-            image_with_detections,
-            detection_label,
-            (x1, y1 - label_padding),
-            font,
-            0.5,
-            green,
-            1,
-            cv2.LINE_AA
-        )
-
-        image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
-
-        img_byte_arr = io.BytesIO()
-        image_with_detections_pil.save(img_byte_arr, format='JPEG')
-        img_byte_arr = img_byte_arr.getvalue()
+        img_byte_arr = annotated_image_byte_arr 
 
         image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
         image_attachment.add_header('Content-Disposition', 'attachment; filename={0}'.format(image_filename))
