@@ -4,18 +4,12 @@ import paho.mqtt.client as mqtt
 
 from io import BytesIO
 import PIL.Image
-import numpy
 import requests
 import json
 import base64
 import io
 import time
 import os
-import cv2
-import uuid
-import time
-import threading
-import requests
 
 import smtplib
 from email.mime.text import MIMEText
