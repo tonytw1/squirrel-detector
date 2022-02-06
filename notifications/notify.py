@@ -38,6 +38,16 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topic)
 
 
+def send_slack():
+    slack_message = json.dumps({
+        'text': summary
+    })
+    headers = {'Content-type': 'application/json'}
+    r = requests.post(slack_webhook, headers=headers, data=slack_message)
+    if r.status_code == 200:
+        logging.info("Slack updated: " + summary)
+
+
 def on_message(client, userdata, msg):
     global last_detection
     global last_sent
@@ -61,13 +71,7 @@ def on_message(client, userdata, msg):
         image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
         # TODO images need to be uploaded to urls before slack can use them
 
-        slack_message = json.dumps({
-            'text': summary
-        })
-        headers = {'Content-type': 'application/json'}
-        r = requests.post(slack_webhook, headers=headers, data=slack_message)
-        if r.status_code == 200:
-            logging.info("Slack updated: " + summary)
+        send_slack(summary)
 
         # Update rate limit watermark
         last_sent = time.time()
