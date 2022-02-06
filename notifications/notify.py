@@ -52,9 +52,10 @@ def on_message(client, userdata, msg):
         if detections[c] > max:
             max = detections[c]
             max_index = c
-    summary = max_index + ": " + str(max)
 
     if (max > 0.70) & (time.time() - last_sent > 60):
+        summary = str(max_index) + ": " + str(max)
+
         # Decode the image payload
         base64_image = message['image']
         image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
