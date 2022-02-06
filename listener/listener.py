@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 
 # Listens for motion detected messages on an MQTT topic
+# The motion message has a JSON body:
+# {
+# 	'image': BASE64 encoded JPEG
+#   'image_file': Original path to the image file on camera device
+# }
+#
 # Foreach motion message run TensorFlow object detection and publish the highest class scores 
 # onto another MQTT detections topic
 # If the detection score is high enough send a notification (email) showing the detection.
@@ -98,15 +104,22 @@ def on_connect(client, userdata, flags, rc):
 
 labels = get_labels(label_file)
 
+def send_detection_message(detections) {
+    for c in detections:
+        label_display_name = labels[c]
+        detection_message = label_display_name + ":" + str(detections[c])
+        logging.info(detection_message)
+        client.publish(detections_topic, detection_message)
+}
+
 def send_zeros():
     global last_detection
     delta = time.time() - last_detection
     if (delta >= 30):
-        for l in labels:
-           label_display_name = labels[l]
-           detection_message = label_display_name + ":0.0"
-           logging.info(detection_message)
-           client.publish(detections_topic, detection_message)
+        zeros = {}
+        for c in labels:
+            zeros[c] = 0.0
+        send_detection_message(zeros)
 
 def on_message(client, userdata, msg):
     global last_detection
@@ -135,24 +148,23 @@ def on_message(client, userdata, msg):
 
     from collections import defaultdict
 
-    maxes = defaultdict(lambda: 0)
+    detections = defaultdict(lambda: 0)
     for i in range(0, len(detection_scores)):
         c = detection_classes[i]
         s = detection_scores[i]
-        i = maxes[c]
+        i = detections[c]
         if s > i:
-           maxes[c] = s
+           detections[c] = s
 
     # Publish notifications for strong class detections and find the max detection strength
+    send_detection_message(detections)
+
+    # Find the best detection
     max = 0
     max_index = 0
-    for c in maxes:
-        label_display_name = labels[c]
-        detection_message = label_display_name + ":" + str(maxes[c])
-        logging.info(detection_message)
-        client.publish(detections_topic, detection_message)
-        if maxes[c] > max:
-            max = maxes[c]
+    for c in detections:
+        if detections[c] > max:
+            max = detections[c]
             max_index = c
 
     # Schedule broadcast of a non motion message 
@@ -163,13 +175,13 @@ def on_message(client, userdata, msg):
     if (max > 0.80) & (time.time() - last_sent > 60):
         # Send an email notification for this event
         # Slack would probably be more immediate 
-        m = "";
-        for c in maxes:
+        m = ""
+        for c in detections:
             label_display_name = labels[c]
-            detection_line = label_display_name + ": " + str(maxes[c])
+            detection_line = label_display_name + ": " + str(detections[c])
             m = m + detection_line
 
-        subject = 'Motion detected - {0} {1}'.format(labels[max_index], maxes[max_index])
+        subject = 'Motion detected - {0} {1}'.format(labels[max_index], detections[max_index])
         cid = image_filename + uuid.uuid4().hex
 
         message = MIMEMultipart("alternative")
@@ -229,7 +241,6 @@ Motion detected
         img_byte_arr = io.BytesIO()
         image_with_detections_pil.save(img_byte_arr, format='JPEG')
         img_byte_arr = img_byte_arr.getvalue()
-
 
         image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
         image_attachment.add_header('Content-Disposition', 'attachment; filename={0}'.format(image_filename))
