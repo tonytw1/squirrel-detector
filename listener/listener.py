@@ -32,6 +32,7 @@ import cv2
 import uuid
 import time
 import threading
+from collections import defaultdict
 
 import smtplib
 from email.mime.text import MIMEText
@@ -79,8 +80,6 @@ logging.info("Model loaded")
 
 # Parse a labels protobuf file into a python map
 # Adapted from retrain/models/research/object_detection/utils/label_map_util.py
-
-
 def load_labelmap(path):
     with open(path, "r") as labels_file:
         label_map_string = labels_file.read()
@@ -218,15 +217,13 @@ def on_message(client, userdata, msg):
     detected_classes = numpy.array(
         list(zip(detection_classes, detection_scores)))
 
-    from collections import defaultdict
-
     detections = defaultdict(lambda: 0)
     for i in range(0, len(detection_scores)):
         c = detection_classes[i]
         s = detection_scores[i]
         i = detections[c]
         if s > i:
-            detections[c] = s
+            detections[labels[c]] = s
 
     annotated_image_byte_arr = annotateImage(prediction, image, image_np)
 
