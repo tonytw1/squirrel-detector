@@ -156,7 +156,7 @@ def on_message(client, userdata, msg):
         summary = str(max_index) + ": " + str(max)
 
         # Decode the image payload
-        base64_image = message['image']
+        base64_image = message['annotated_image']
         img_bytes = base64.b64decode(base64_image)
         image_url = upload_image(s3_bucket, image_filename, img_bytes)
 
