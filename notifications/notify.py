@@ -38,7 +38,6 @@ last_sent = 0
 
 client = mqtt.Client()
 
-
 def on_connect(client, userdata, flags, rc):
     logging.info("Connected with result code "+str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
@@ -104,6 +103,7 @@ def on_message(client, userdata, msg):
     message = json.loads(msg.payload)
     detections = message['detections']
     duration = message['duration']
+    image_filename = message['image_filename']
 
     # Find the best detection
     max = 0
@@ -123,11 +123,10 @@ def on_message(client, userdata, msg):
         # TODO images need to be uploaded to urls before slack can use them
 
         send_slack(summary)
-        send_email(summary, detections, "TODO", img_bytes, duration)
+        send_email(summary, detections, image_filename, img_bytes, duration)
 
         # Update rate limit watermark
         last_sent = time.time()
-
 
 client = mqtt.Client()
 client.on_connect = on_connect
