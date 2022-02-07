@@ -223,14 +223,6 @@ def on_message(client, userdata, msg):
     send_detection_message(detections, base64_image,
                            base64_annotated_image, duration, image_filename)
 
-    # Find the best detection
-    max = 0
-    max_index = 0
-    for c in detections:
-        if detections[c] > max:
-            max = detections[c]
-            max_index = c
-
     # Schedule broadcast of a non motion message
     logging.info("Scheduling send zeros")
     t = threading.Timer(30, send_zeros)
