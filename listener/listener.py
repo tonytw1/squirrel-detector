@@ -222,9 +222,10 @@ def on_message(client, userdata, msg):
     for i in range(0, len(detection_scores)):
         c = detection_classes[i]
         s = detection_scores[i]
-        i = detections[c]
+        key = labels[c]
+        i = detections[key]
         if s > i:
-            detections[labels[c]] = s
+            detections[key] = s
 
     annotated_image_byte_arr = annotateImage(prediction, image, image_np)
 
