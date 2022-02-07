@@ -17,6 +17,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 
+import boto3
+
 import logging
 import sys
 logging.basicConfig(stream=sys.stdout, level=logging.INFO,
@@ -34,9 +36,30 @@ smtp_user = os.environ.get('SMTP_USER')
 smtp_password = os.environ.get('SMTP_PASSWORD')
 smtp_server = os.environ.get('SMTP_HOST')
 
+
+aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+s3_bucket = os.environ.get('S3_BUCKET')
+
 last_sent = 0
 
 client = mqtt.Client()
+
+s3_client = boto3.client('s3',
+                         aws_access_key_id=aws_access_key_id,
+                         aws_secret_access_key=aws_secret_access_key
+                         )
+
+
+def upload_image(s3_bucket, image_filename, data):
+    response = s3_client.upload_fileobj(
+        io.BytesIO(data), s3_bucket, image_filename)
+    response = s3_client.generate_presigned_url('get_object',
+                                                Params={'Bucket': s3_bucket,
+                                                        'Key': image_filename},
+                                                ExpiresIn=3600)
+    return response
+
 
 def on_connect(client, userdata, flags, rc):
     logging.info("Connected with result code "+str(rc))
@@ -44,15 +67,28 @@ def on_connect(client, userdata, flags, rc):
     # reconnect then subscriptions will be renewed.
     client.subscribe(topic)
 
+def send_slack(summary, image_filename, image_url):
+    blocks = [
+        {
+                'type': 'image',
+                'block_id': image_filename,
+                'image_url': image_url,
+                'alt_text': image_filename
+        }
+    ]
 
-def send_slack(summary):
     slack_message = json.dumps({
-        'text': summary
+        'text': summary,
+        'blocks': blocks
     })
+
     headers = {'Content-type': 'application/json'}
     r = requests.post(slack_webhook, headers=headers, data=slack_message)
     if r.status_code == 200:
         logging.info("Slack updated: " + summary)
+    else:
+        logging.info("Slack update failed: " + r.status_code + " / " + r.text)
+
 
 def send_email(summary, detections, image_filename, img_byte_arr, duration):
     # Send an email notification for this event
@@ -96,6 +132,7 @@ Motion detected
     server.sendmail(message_from, message_to, message.as_string())
     logging.info("Sent notification: " + subject)
 
+
 def on_message(client, userdata, msg):
     global last_detection
     global last_sent
@@ -104,6 +141,8 @@ def on_message(client, userdata, msg):
     detections = message['detections']
     duration = message['duration']
     image_filename = message['image_filename']
+
+    print(detections)
 
     # Find the best detection
     max = 0
@@ -119,14 +158,14 @@ def on_message(client, userdata, msg):
         # Decode the image payload
         base64_image = message['image']
         img_bytes = base64.b64decode(base64_image)
-        image = PIL.Image.open(BytesIO(img_bytes))
-        # TODO images need to be uploaded to urls before slack can use them
+        image_url = upload_image(s3_bucket, image_filename, img_bytes)
 
-        send_slack(summary)
+        send_slack(summary, image_filename, image_url)
         send_email(summary, detections, image_filename, img_bytes, duration)
 
         # Update rate limit watermark
         last_sent = time.time()
+
 
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -136,4 +175,3 @@ logging.info("Connecting to MQTT: {0} / {1}".format(broker, topic))
 client.connect(broker, port, 60)
 
 client.loop_forever()
-
