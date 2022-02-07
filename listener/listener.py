@@ -34,11 +34,6 @@ import time
 import threading
 from collections import defaultdict
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
-
 from google.protobuf import text_format
 import string_int_label_map_pb2
 from six import string_types
@@ -61,13 +56,6 @@ client = mqtt.Client()
 last_detection = 0
 
 label_file = os.environ.get('LABELS')
-
-message_from = os.environ.get('EMAIL_FROM')
-message_to = os.environ.get('EMAIL_TO')
-
-smtp_user = os.environ.get('SMTP_USER')
-smtp_password = os.environ.get('SMTP_PASSWORD')
-smtp_server = os.environ.get('SMTP_HOST')
 
 last_sent = 0
 
