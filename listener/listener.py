@@ -119,12 +119,13 @@ def on_connect(client, userdata, flags, rc):
 labels = get_labels(label_file)
 
 
-def send_detection_message(detections, image, annotated_image, duration):
+def send_detection_message(detections, image, annotated_image, duration, image_filename):
     message = {
         'detections': detections,
         'image': image,
         'annotated_image': annotated_image,
-        'duration': duration
+        'duration': duration,
+        'image_filename': image_filename
     }
     detection_message = json.dumps(message)
     logging.info("Sending detection message")
@@ -139,7 +140,7 @@ def send_zeros():
         zeros = {}
         for c in labels.values():
             zeros[c] = 0.0
-        send_detection_message(zeros, None, None, None)
+        send_detection_message(zeros, None, None, None, None)
 
 
 def annotateImage(prediction, image, image_np):
@@ -231,7 +232,7 @@ def on_message(client, userdata, msg):
     base64_annotated_image = base64.b64encode(
         annotated_image_byte_arr).decode("ascii")
     send_detection_message(detections, base64_image,
-                           base64_annotated_image, duration)
+                           base64_annotated_image, duration, image_filename)
 
     # Find the best detection
     max = 0
