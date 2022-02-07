@@ -141,8 +141,7 @@ def on_message(client, userdata, msg):
     detections = message['detections']
     duration = message['duration']
     image_filename = message['image_filename']
-
-    print(detections)
+    logger.info("Received detections: " + detections)
 
     # Find the best detection
     max = 0
