@@ -36,7 +36,6 @@ smtp_user = os.environ.get('SMTP_USER')
 smtp_password = os.environ.get('SMTP_PASSWORD')
 smtp_server = os.environ.get('SMTP_HOST')
 
-
 aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
 s3_bucket = os.environ.get('S3_BUCKET')
@@ -50,16 +49,16 @@ s3_client = boto3.client('s3',
                          aws_secret_access_key=aws_secret_access_key
                          )
 
-
 def upload_image(s3_bucket, image_filename, data):
+    # Upload image to private s3 bucket.
+    # Return a presigned url which can be used to view the image
     response = s3_client.upload_fileobj(
         io.BytesIO(data), s3_bucket, image_filename)
     response = s3_client.generate_presigned_url('get_object',
                                                 Params={'Bucket': s3_bucket,
                                                         'Key': image_filename},
-                                                ExpiresIn=3600)
+                                                ExpiresIn=3600 * 12)
     return response
-
 
 def on_connect(client, userdata, flags, rc):
     logging.info("Connected with result code "+str(rc))
@@ -88,7 +87,6 @@ def send_slack(summary, image_filename, image_url):
         logging.info("Slack updated: " + summary)
     else:
         logging.info("Slack update failed: " + r.status_code + " / " + r.text)
-
 
 def send_email(summary, detections, image_filename, img_byte_arr, duration):
     # Send an email notification for this event
@@ -156,9 +154,12 @@ def on_message(client, userdata, msg):
         # Decode the image payload
         base64_image = message['annotated_image']
         img_bytes = base64.b64decode(base64_image)
-        image_url = upload_image(s3_bucket, image_filename, img_bytes)
 
-        send_slack(summary, image_filename, image_url)
+        # Slack wants images represented as urls;
+        # we are using pre signed urls for image files uploaded to a private s3 bucket todo this
+        presigned_image_url = upload_image(s3_bucket, image_filename, img_bytes)
+        send_slack(summary, image_filename, presigned_image_url)
+
         send_email(summary, detections, image_filename, img_bytes, duration)
 
         # Update rate limit watermark
