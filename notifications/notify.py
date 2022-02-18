@@ -151,9 +151,8 @@ def on_message(client, userdata, msg):
             max = detections[c]
             max_index = c
 
-    if (max > 0.70) & (time.time() - last_sent > 60):
+    if (max > 0.90) & (time.time() - last_sent > 60):
         summary = str(max_index) + ": " + str(max)
-
         # Decode the image payload
         base64_image = message['annotated_image']
         img_bytes = base64.b64decode(base64_image)
@@ -164,7 +163,6 @@ def on_message(client, userdata, msg):
 
         # Update rate limit watermark
         last_sent = time.time()
-
 
 client = mqtt.Client()
 client.on_connect = on_connect
