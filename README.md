@@ -557,12 +557,23 @@ Presumably this applies a loss to these incorrect predictions which can nudge th
 
 ### Putting it all together
 
-We can now write a script which will listen for the motion messages, call the TensowFlow model for object detections
+We can now write some scripts to listen for motion messages, call the TensowFlow model for object detections
 and send notifications.
 
 [listener/listener.py](listener/listener.py)
 
-We'll use Cloud Build to package this as a Docker image so that all the differcult TensorFlow dependencies and be contained.
+Listens for motion messages on the motion MQTT topic.
+It does TensowFlow detection and annotates the image with the best detection. 
+It publishes the detection results on the detections MQTT topic.
+
+[notifications/notify.py](notifications/notify.py) 
+
+Listens for detection messages and publishes those which 
+meet a minimum confidence. We desired outcome is an alert on a mobile device.
+Slack proved to be more effective as it's latency is alot lower than email.
+
+Cloud Build is used to package these scripts as Docker images. 
+This helps to contain the difficult TensorFlow dependencies and makes these services easy to deploy locally.
 
 [listener/cloudbuild.yaml](listener/cloudbuild.yaml)
 
