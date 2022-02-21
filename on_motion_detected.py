@@ -10,14 +10,14 @@ num_argv = len(sys.argv)
 if num_argv >=4:
 	# Image filepath and dimensions have been pass to us
 	# Do we have a readable image file path?
-	image_filepath = sys.argv[1];
+	image_filepath = sys.argv[1]
 	if os.access(image_filepath, os.R_OK):
 		# Encode image to a base64 string
 		result = subprocess.run(['base64', image_filepath], stdout=subprocess.PIPE)
 		image = result.stdout.decode('utf-8')
+		image_filename = os.path.split(image_filepath)[1]
 		message = {
-			'argvs': num_argv,
-			'image_file': image_filepath,
+			'image_filename': image_filename,
 			'image_width': sys.argv[2],
         		'image_height': sys.argv[3],
 			'image': image

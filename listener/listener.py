@@ -191,7 +191,7 @@ def on_message(client, userdata, msg):
     # Decode the image payload
     base64_image = message['image']
     image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
-    image_filename = message['image_file'].rsplit('/', 1)[1]
+    image_filename = message['image_filename']
 
     image_np = numpy.array(image)
 
