@@ -149,7 +149,9 @@ def on_message(client, userdata, msg):
             max = detections[c]
             max_index = c
 
-    if (max > 0.90) & (time.time() - last_sent > 60):
+    is_interesting = max_index != 'pigeon'
+
+    if is_interesting & (max > 0.90) & (time.time() - last_sent > 60):
         summary = str(max_index) + ": " + str(max)
         # Decode the image payload
         base64_image = message['annotated_image']
