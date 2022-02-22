@@ -19,7 +19,7 @@ if num_argv >=4:
 		message = {
 			'image_filename': image_filename,
 			'image_width': sys.argv[2],
-        		'image_height': sys.argv[3],
+            'image_height': sys.argv[3],
 			'image': image
 		}
 
