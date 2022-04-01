@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 
 # Update and bootstrap utilities needed by nvidia packages
 RUN apt-get update
-RUN apt-get install -y apt-utils wget gnupg2 software-properties-common
+RUN apt-get install -y apt-utils wget gnupg2 software-properties-common nano
 RUN apt-get install -y tzdata
 
 # Nivida GPU drivers and Cuda tools
@@ -14,5 +14,5 @@ RUN add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/r
 
 RUN apt-get update
 # TODO do not need to install recommended
-RUN apt-get -y install cuda
-RUN apt-get install -y libcudnn8
+RUN apt-get install -y cuda 
+RUN apt-get install libcudnn8
