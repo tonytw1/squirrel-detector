@@ -27,8 +27,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
 broker = os.environ.get('MOTION_MQTT_HOST')
 port = int(os.environ.get('MOTION_MQTT_PORT'))
 topic = os.environ.get('DETECTIONS_MQTT_TOPIC')
-
 slack_webhook = os.environ.get('SLACK_WEBHOOK')
+metrics_topic = os.environ.get('METRICS_MQTT_TOPIC')
 
 message_from = os.environ.get('EMAIL_FROM')
 message_to = os.environ.get('EMAIL_TO')
@@ -148,6 +148,11 @@ def on_message(client, userdata, msg):
         if detections[c] > max:
             max = detections[c]
             max_index = c
+
+        # Republished onto metrics topic
+        if metrics_topic is not None:
+		metrics_message = c + ":" + detections[c]
+		client.publish(detections_topic, metrics_message)
 
     is_interesting = max_index != 'pigeon'
 
