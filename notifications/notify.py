@@ -153,7 +153,7 @@ def on_message(client, userdata, msg):
         if metrics_topic is not None:
                 metrics_message = c + ":" + str(detections[c])
                 logging.info("Publishing metrics message: " + metrics_message)
-                client.publish(detections_topic, metrics_message)
+                client.publish(metrics_topic, metrics_message)
 
     is_interesting = max_index != 'pigeon'
 
