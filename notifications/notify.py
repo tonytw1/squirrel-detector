@@ -151,9 +151,9 @@ def on_message(client, userdata, msg):
 
         # Republished onto metrics topic
         if metrics_topic is not None:
-		metrics_message = c + ":" + detections[c]
-		logging.info("Publishing metrics message: " + metrics_message)
-		client.publish(detections_topic, metrics_message)
+                metrics_message = c + ":" + detections[c]
+                logging.info("Publishing metrics message: " + metrics_message)
+                client.publish(detections_topic, metrics_message)
 
     is_interesting = max_index != 'pigeon'
 
