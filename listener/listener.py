@@ -190,43 +190,46 @@ def on_message(client, userdata, msg):
 
     # Decode the image payload
     base64_image = message['image']
-    image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
-    image_filename = message['image_filename']
+    try:
+        image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
+        image_filename = message['image_filename']
+        image_np = numpy.array(image)
 
-    image_np = numpy.array(image)
+        start = time.time()
+        prediction = predict_tf(image_np)
+        duration = time.time() - start
+        logging.info("Prediction took: {0}".format(duration))
+        detection_scores = prediction['detection_scores'].numpy().tolist()[0]
+        detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
-    start = time.time()
-    prediction = predict_tf(image_np)
-    duration = time.time() - start
-    logging.info("Prediction took: {0}".format(duration))
-    detection_scores = prediction['detection_scores'].numpy().tolist()[0]
-    detection_classes = prediction['detection_classes'].numpy().tolist()[0]
+        # Merge detection class with scores
+        detected_classes = numpy.array(
+            list(zip(detection_classes, detection_scores)))
 
-    # Merge detection class with scores
-    detected_classes = numpy.array(
-        list(zip(detection_classes, detection_scores)))
+        detections = defaultdict(lambda: 0)
+        for i in range(0, len(detection_scores)):
+            c = detection_classes[i]
+            s = detection_scores[i]
+            key = labels[c]
+            i = detections[key]
+            if s > i:
+                detections[key] = s
 
-    detections = defaultdict(lambda: 0)
-    for i in range(0, len(detection_scores)):
-        c = detection_classes[i]
-        s = detection_scores[i]
-        key = labels[c]
-        i = detections[key]
-        if s > i:
-            detections[key] = s
+        annotated_image_byte_arr = annotateImage(prediction, image, image_np)
 
-    annotated_image_byte_arr = annotateImage(prediction, image, image_np)
+        # Publish notifications for strong class detections and find the max detection strength
+        base64_annotated_image = base64.b64encode(
+            annotated_image_byte_arr).decode("ascii")
+        send_detection_message(detections, base64_image,
+                               base64_annotated_image, duration, image_filename)
 
-    # Publish notifications for strong class detections and find the max detection strength
-    base64_annotated_image = base64.b64encode(
-        annotated_image_byte_arr).decode("ascii")
-    send_detection_message(detections, base64_image,
-                           base64_annotated_image, duration, image_filename)
+        # Schedule broadcast of a non motion message
+        logging.info("Scheduling send zeros")
+        t = threading.Timer(30, send_zeros)
+        t.start()
 
-    # Schedule broadcast of a non motion message
-    logging.info("Scheduling send zeros")
-    t = threading.Timer(30, send_zeros)
-    t.start()
+    except:
+        println("Could not process message")
 
 client = mqtt.Client()
 client.on_connect = on_connect
