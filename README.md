@@ -587,3 +587,46 @@ Separation of the classes was very good. Most detections with > 90% confidence w
 ![Detected fox](images/detected_fox.jpg)
 
 ![Detected fox](images/detected_fox2.jpg)
+
+
+
+### Local training 
+
+In 2022 it it became possible to purchase a GPU capable of local training and I needed to revisit the training pipeline.
+
+
+The GPU drivers are a large install so we should build a Docker base image to contain them.
+
+Build and test Nvidia base image.
+
+```
+docker build -t eelpie:ubuntu-nvidia-base-image retraining/ubuntu-nvidia-base-image/
+docker run --gpus all eelpie:ubuntu-nvidia-base-image nvidia-smi
+```
+
+The version of the `nvidia-driver` in the Docker image must exactly match the version running on the host machine. 
+
+
+
+We can install the TensorFlow dependencies on top of this base image to produce a training image.
+Build the training image:
+
+```
+docker build -t eelpie:training retraining/
+```
+
+
+
+We then want to run this training image with our project and training data mounted.
+
+Run the training image with the detector git project mounted as a volume at /home/retraining and the training data mounted at /home/training
+
+```
+docker run -it --gpus all --name train -v '/home/tony/git/squirrel-detector:/home' -v '/home/tony/training:/home/training' -w '/home/retraining' eelpie:training bash train.bash
+```
+
+To reattach to the training container:
+
+```
+docker exec -it train bash
+```
