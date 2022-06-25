@@ -587,3 +587,23 @@ Separation of the classes was very good. Most detections with > 90% confidence w
 ![Detected fox](images/detected_fox.jpg)
 
 ![Detected fox](images/detected_fox2.jpg)
+
+
+
+### Local training 
+
+
+Build and test Nvidia base image.
+
+```
+docker build -t eelpie:ubuntu-nvidia-base-image retraining/ubuntu-nvidia-base-image/
+docker run --gpus all eelpie:ubuntu-nvidia-base-image nvidia-smi
+```
+
+Build the training image:
+
+```
+docker build -t eelpie:training retraining/
+```
+
+
