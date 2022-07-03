@@ -106,15 +106,21 @@ def send_email(summary, detections, image_filename, img_byte_arr, duration):
 
     text = """\
 Motion detected
-        """
+    """
+
     html = """\
 <p><pre>{0}</pre></p>
 <p>Took: {2}</p>
-<p><img src="cid:{1}"></p>
+<p>
+    <img src="cid:{1}">
+    <br/>
+    {3}
+</p>
 <hr/>
-        """
+    """
+
     plain_part = MIMEText(text, "plain")
-    html_part = MIMEText(html.format(m, cid, duration), "html")
+    html_part = MIMEText(html.format(m, cid, duration, image_filename), "html")
 
     image_attachment = MIMEImage(img_byte_arr, _subtype="jpeg")
     image_attachment.add_header(
