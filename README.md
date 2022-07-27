@@ -552,7 +552,7 @@ This can be improved by including images with none of the object classes in the 
 
 Presumably this applies a loss to these incorrect predictions which can nudge the training in a different direction.
 
-![Background with no interesting objects](background.png)
+![Background with no interesting objects](images/background.png)
 
 
 ### Putting it all together
