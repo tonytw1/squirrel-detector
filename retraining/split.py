@@ -7,14 +7,15 @@ ds = tf.data.TFRecordDataset(files)
 ds = ds.shuffle( buffer_size=10000)
 
 l = list(ds.as_numpy_iterator())
-print(len(l))
 
+# The tfrecond tensor format is really basic; we need to know about the fields in the schema
 LABELED_TFREC_FORMAT = {
     "image/filename": tf.io.FixedLenFeature([], tf.string), # tf.string means bytestring
     "image/object/class/text": tf.io.VarLenFeature(tf.string),  # shape [] means single element
 }
 
 for x in l:
+    # Show that we can extract filename and tagged classes from each record
     record = tf.io.parse_single_example(x, LABELED_TFREC_FORMAT)
     filenameTensor = record['image/filename']
     filename = bytes.decode(filenameTensor.numpy())
@@ -36,12 +37,9 @@ trainingSize = total - evalSize
 print("Eval size", evalSize)
 print("Training size", trainingSize)
 
-print("A")
 # Can't use ds.take and ds.skip because the order is not repeatable; duplicate items
 eval = l[0:evalSize]
-print("B")
 training = l[evalSize:total]
-print("C")
 
 print("Extracted ", len(eval), " eval items")
 print("Left with ", len(training), " training items")
