@@ -153,6 +153,25 @@ They can be used to run detections against our images.
 
 Let's pick a pretrained model and try to run it against one of our test images.
 
+
+
+### Object Detection API
+
+The TensorFlow Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
+
+The [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
+seem to have suffered from python and CUDA dependency rot.
+
+Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
+
+My attempts at working around this are documented in this Dockerfile: [retraining/Dockerfile](retraining/Dockerfile).
+
+
+
+
+### Testing in Google Colab
+
+
 Working on a local machine I was blocked almost immediately with an error while trying to load the saved model.
 
 This could be a mismatch between TensorFlow 2.5 and the available examples.
@@ -160,8 +179,6 @@ This could be a mismatch between TensorFlow 2.5 and the available examples.
 Rather than get stuck trying to resolve dependencies we can retreat to a [Google Colab](https://colab.research.google.com) notebook.
 Colab gives us a known good development environment to get started in.
 
-
-### Testing in Google Colab
 
 Alot of data development work happens in notebook environments like Jupyter and Colab.
 
@@ -332,7 +349,7 @@ This was much quicker than expected and somewhat cathartic.
 VoTT can export TensorFlow Records for direct import into TensorFlow.
 
 
-### Split the data
+### Splitting the data
 
 We need to reserve some of our data for testing (or evaluating) our retrained model.
 
@@ -359,18 +376,6 @@ Or as a script which can shuffle the data before splitting:
 A better splitting would mightt be to get representative spread of classes into the evaluation folder
 (so that we don't produce a model which is excellent at detecting foxes but poor at squirrels). 
 Could this introduce a bias towards the classes with less examples?
-
-
-### Object Detection API
-
-The TensorFlow Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
-
-The [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
-seem to have suffered from python and CUDA dependency rot.
-
-Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
-
-My attempts at working around this are documented in this Dockerfile: [retraining/Dockerfile](retraining/Dockerfile).
 
 
 ### Training
