@@ -20,14 +20,15 @@ new objects and how to use that model from my own code.
 
 - [Retraining](#retraining)
 - [Annotating images](#annotating-images)
+- [Splitting the data](#splitting-the-data)
 - [Training](#training)
 - [Exporting the model](#exporting-the-model)
-
+- [Evaluating the model](#evaluating-the-model)
+- 
 - [Inference speed](#inference-speed)
 - [Tweaking the model](#tweaking-the-model)
 
 - [Putting it all together](#putting-it-all-together)
-
 - [Results](#results)
 
 
@@ -512,6 +513,13 @@ The exported model is output as a ~40Mb folder containing a protobuf representat
 This is quite remarkable; we've been given a set of files which knows how to detect animals.
 
 This saved model can be loaded into TensorFlow Serving or imported directly into a python script.
+
+
+
+### Evaluating the model
+
+TODO 
+
 
 
 ## Inference speed
