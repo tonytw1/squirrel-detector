@@ -334,10 +334,14 @@ VoTT can export TensorFlow Records for direct import into TensorFlow.
 
 ### Split the data
 
-We need to reserve some of our test data for testing (or evaluating) our retrained model.
+We need to reserve some of our data for testing (or evaluating) our retrained model.
 
 Just like a real exam it needs to be tested on questions it's not seen before.
-We split the examples approximately 80% / 20% between training and evaluating.
+We'll split the examples approximately 80% / 20% between training and evaluation data.
+
+The evaluation data will be put aside until after training. It will then be used to 
+score the trained model on how well it preforms on images it has never seen before.
+
 
 ```
 cd Squirrels-TFRecords-export
@@ -348,8 +352,13 @@ mv training/*0-00.tfrecord eval
 mv training/*1-00.tfrecord eval
 ```
 
-A better splitting would probably try to get a representative spread of classes into the evaluation folder
-(so that we don't produce a model which is excellent at detecting foxes but poor at squirrels).
+Or as a script which can shuffle the data before splitting:
+
+[retraining/split.py](retraining/split.py)
+
+A better splitting would mightt be to get representative spread of classes into the evaluation folder
+(so that we don't produce a model which is excellent at detecting foxes but poor at squirrels). 
+Could this introduce a bias towards the classes with less examples?
 
 
 ### Object Detection API
