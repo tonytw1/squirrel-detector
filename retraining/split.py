@@ -1,5 +1,4 @@
 import tensorflow as tf
-import tensorflow_datasets as tfds
 import os
 
 files = tf.data.Dataset.list_files("data/*.tfrecord")
@@ -32,7 +31,7 @@ for x in l:
 total = len(l)
 print("Loaded records in dataset:", total)
 
-evalSize = round(total * 0.25)
+evalSize = round(total * 0.20)
 trainingSize = total - evalSize
 print("Eval size", evalSize)
 print("Training size", trainingSize)
