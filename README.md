@@ -440,14 +440,17 @@ We can use the evaluation images we reserved to continually evaluate the model's
 
 ```
 export CUDA_VISIBLE_DEVICES=-1
-python3 models/research/object_detection/model_main_tf2.py --pipeline_config_path=training/pipeline.config --model_dir=training --checkpoint_dir=training  --alsologtostderr
+python3 /usr/local/lib/python3.8/dist-packages/object_detection/model_main_tf2.py  --pipeline_config_path=retraining/squirrelnet_pipeline.config --model_dir=retraining/pretrained-models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8 --checkpoint_dir=retraining/squirrelnet  --alsologtostderr
 ```
 
 Note how we have to disable CUDA to prevent the training and evaluation processes competing for the GPU.
 
-![Evaluation standard output](eval_stdout.png)
 
 The evaluation process outputs files which the TensorBoard UI can use to show how the model's predictions change as it trains.
+
+TODO - where are these files put and tensorboard start up?
+
+![Evaluation standard output](eval_stdout.png)
 
 ![TensorBoard image evaluation](eval.png)
 
@@ -651,3 +654,11 @@ To reattach to the training container to monitor progress:
 ```
 docker exec -it train bash
 ```
+
+To run the evaluation process: 
+
+```
+python3 /usr/local/lib/python3.8/dist-packages/object_detection/model_main_tf2.py  --pipeline_config_path=retraining/squirrelnet_pipeline.config --model_dir=retraining/pretrained-models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8 --checkpoint_dir=retraining/squirrelnet  --alsologtostderr
+```
+
+TODO tensorboard
