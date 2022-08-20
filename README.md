@@ -658,6 +658,8 @@ docker exec -it train bash
 To run the evaluation process: 
 
 ```
+docker exec -it train bash
+export CUDA_VISIBLE_DEVICES=-1
 python3 /usr/local/lib/python3.8/dist-packages/object_detection/model_main_tf2.py  --pipeline_config_path=retraining/squirrelnet_pipeline.config --model_dir=retraining/pretrained-models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8 --checkpoint_dir=retraining/squirrelnet  --alsologtostderr
 ```
 
