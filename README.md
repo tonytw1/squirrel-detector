@@ -251,6 +251,16 @@ There is plenty in here which I don't yet understand yet:
 
 [detect.py](detect.py)
 
+```
+python3 detect.py test-images/mostly-fox.jpg
+```
+```
+Detecting
+51.0: 0.57779586
+47.0: 0.5406496
+18.0: 0.38273856
+64.0: 0.3153658
+```
 
 ### Resolving labels
 

@@ -13,7 +13,7 @@ print("Importing TensorFlow")
 import tensorflow as tf
 
 print("Loading saved model")
-saved_model = tf.saved_model.load('/home/tony/.keras/datasets/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
+saved_model = tf.saved_model.load('retraining/pretrained-models/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model')
 model = saved_model.signatures['serving_default'] #TODO This looks important and is not understood
 
 input_tensor = tf.convert_to_tensor(np_image)
