@@ -674,3 +674,29 @@ python3 /usr/local/lib/python3.8/dist-packages/object_detection/model_main_tf2.p
 ```
 
 TODO tensorboard
+
+
+### Edge TPU
+
+The Google Coral USB dongle is designed to run [TensorFlow Lite](https://www.tensorflow.org/lite) models quickly with low power consumption.
+
+But what is TensorFlow Lite?
+Hard to tell
+
+Can we convert our trained TensorFlow model to a TensorFlow Light model.
+
+Use the [TensorFlow Lite Converter](https://www.tensorflow.org/lite/models/convert/)
+
+Naive first attempt using convert.py:
+
+```
+<unknown>:0: error: loc(callsite(callsite(fused["StatelessWhile:", "map/while@__inference_call_func_12046"] at fused["StatefulPartitionedCall:", "StatefulPartitionedCall@__inference_signature_wrapper_14420"]) at fused["StatefulPartitionedCall:", "StatefulPartitionedCall"])): failed while converting: 'map/while_body': 
+Some ops are not supported by the native TFLite runtime, you can enable TF kernels fallback using TF Select. See instructions: https://www.tensorflow.org/lite/guide/ops_select 
+```
+
+This operation may be supported; mobilenet_ssd_v2 seems to be one of the Coral example models.
+https://coral.ai/docs/edgetpu/models-intro/#supported-operations
+
+Will the Coral USB dongle be accessible from Docker?
+
+Recap; can we run our TensowFlow detection model locally still?
