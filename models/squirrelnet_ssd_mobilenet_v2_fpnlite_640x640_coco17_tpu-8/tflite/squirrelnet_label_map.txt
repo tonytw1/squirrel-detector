@@ -1,0 +1,7 @@
+squirrel
+fox
+magpie
+pigeon
+seagull
+cat
+

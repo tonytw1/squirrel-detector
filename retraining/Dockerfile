@@ -19,3 +19,5 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -yq libglib2.0-0
 RUN git clone https://github.com/tensorflow/models.git
 RUN cd models/research && protoc object_detection/protos/*.proto --python_out=. && cp object_detection/packages/tf2/setup.py .
 RUN cd models/research && python3 -m pip install .
+
+RUN pip install tflite-support
