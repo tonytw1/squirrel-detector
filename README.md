@@ -697,6 +697,24 @@ Some ops are not supported by the native TFLite runtime, you can enable TF kerne
 This operation may be supported; mobilenet_ssd_v2 seems to be one of the Coral example models.
 https://coral.ai/docs/edgetpu/models-intro/#supported-operations
 
+
+
+Checking 
+https://colab.research.google.com/github/tensorflow/models/blob/master/research/object_detection/colab_tutorials/convert_odt_model_to_TFLite.ipynb
+implies that we can export a more friendly version of the Tensowflow model before converting.
+
+convert.py then runs to completion.
+
+
+Metadata
+
+
+
 Will the Coral USB dongle be accessible from Docker?
 
 Recap; can we run our TensowFlow detection model locally still?
+
+
+
+
+
