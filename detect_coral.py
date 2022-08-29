@@ -14,13 +14,10 @@ image_file = sys.argv[1]
 image = PIL.Image.open(image_file)
 
 # Load the tflite model into an interpreter
-interpreter = make_interpreter('models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/edgetpu/squirrelnet.tflite_edgetpu.tflite')
+interpreter = make_interpreter('models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/edgetpu/squirrelnet-normalised_edgetpu.tflite')
 interpreter.allocate_tensors()
 print("Interpreter input details")
 print(interpreter.get_input_details())
-
-
-
 
 # Get input and output tensors.
 input_details = interpreter.get_input_details()
@@ -35,16 +32,8 @@ input_data = numpy.expand_dims(resized_image, axis=0)
 # Convert input to floating point if this model requires them
 floating_model = input_details[0]['dtype'] == numpy.float32
 print("Is floating model: ", floating_model)
-if floating_model:
-    input_data = (numpy.float32(input_data) - 127.5) / 127.5	# TODO hardcoded input_mean and input_std normalisation constants; can these be extracted from the model?
 
 interpreter.set_tensor(input_details[0]['index'], input_data)
-
-interpreter.invoke()
-interpreter.invoke()
-interpreter.invoke()
-interpreter.invoke()
-
 
 # Invoke
 for _ in range(100):
