@@ -710,6 +710,54 @@ Metadata
 
 
 
+Coral setup
+
+https://coral.ai/docs/accelerator/get-started
+
+Install the Edge TPU runtime:
+
+Example code 100ms for first image then 13ms for next call (USB 2.0)
+White light flashes for each inteference?
+
+
+
+No improvement in perf on my model; no light flashes.
+
+
+
+sudo apt-get install edgetpu-compiler
+
+
+```
+tony@merwick:~/git/squirrel-detector$ edgetpu_compiler models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/tflite/squirrelnet.tflite.normalised 
+Edge TPU Compiler version 16.0.384591198
+Started a compilation timeout timer of 180 seconds.
+
+Model compiled successfully in 25 ms.
+
+Input model: models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/tflite/squirrelnet.tflite.normalised
+Input size: 3.61MiB
+Output model: squirrelnet.tflite_edgetpu.tflite
+Output size: 3.86MiB
+On-chip memory used for caching model parameters: 0.00B
+On-chip memory remaining for caching model parameters: 0.00B
+Off-chip memory used for streaming uncached model parameters: 0.00B
+Number of Edge TPU subgraphs: 0
+Total number of operations: 157
+Operation log: squirrelnet.tflite_edgetpu.log
+
+Model successfully compiled but not all operations are supported by the Edge TPU. A percentage of the model will instead run on the CPU, which is slower. If possible, consider updating your model to use only operations supported by the Edge TPU. For details, visit g.co/coral/model-reqs.
+Number of operations that will run on Edge TPU: 0
+Number of operations that will run on CPU: 157
+See the operation log file for individual operation details.
+Compilation child process completed within timeout period.
+Compilation succeeded! 
+```
+
+
+
+
+
 Will the Coral USB dongle be accessible from Docker?
 
 Recap; can we run our TensowFlow detection model locally still?

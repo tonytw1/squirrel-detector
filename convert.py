@@ -2,7 +2,24 @@ import tensorflow as tf
 
 # Convert the model
 converter = tf.lite.TFLiteConverter.from_saved_model('models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/tflite/saved_model') # path to the SavedModel directory
+
+
+def representative_data_gen():
+  dataset_list = tf.data.Dataset.list_files("test-images/*")
+  for i in range(2):
+    image = next(iter(dataset_list))
+    image = tf.io.read_file(image)
+    image = tf.io.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, [640, 640])
+    image = tf.cast(image / 255., tf.float32)
+    image = tf.expand_dims(image, 0)
+    yield [image]
+
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+converter.representative_dataset = representative_data_gen
+converter.inference_input_type = tf.uint8
+converter.inference_output_type = tf.uint8
 tflite_model = converter.convert()
 
 # print("Writing tflife model")

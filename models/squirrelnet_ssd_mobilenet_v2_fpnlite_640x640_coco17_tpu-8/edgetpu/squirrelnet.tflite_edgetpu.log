@@ -1,0 +1,24 @@
+Edge TPU Compiler version 16.0.384591198
+Input: /home/tony/git/squirrel-detector/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/tflite/squirrelnet.tflite.normalised
+Output: models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/edgetpu/squirrelnet.tflite_edgetpu.tflite
+
+Operator                       Count      Status
+
+CONV_2D                        14         More than one subgraph is not supported
+CONV_2D                        58         Mapped to Edge TPU
+DEQUANTIZE                     2          Operation is working on an unsupported data type
+QUANTIZE                       8          Operation is otherwise supported, but not mapped due to some unspecified limitation
+QUANTIZE                       1          Mapped to Edge TPU
+LOGISTIC                       1          Operation is otherwise supported, but not mapped due to some unspecified limitation
+CUSTOM                         1          Operation is working on an unsupported data type
+ADD                            2          More than one subgraph is not supported
+ADD                            10         Mapped to Edge TPU
+RESHAPE                        2          Operation is otherwise supported, but not mapped due to some unspecified limitation
+RESHAPE                        2          More than one subgraph is not supported
+RESHAPE                        4          Tensor has unsupported rank (up to 3 innermost dimensions mapped)
+RESHAPE                        6          Mapped to Edge TPU
+PACK                           4          Tensor has unsupported rank (up to 3 innermost dimensions mapped)
+CONCATENATION                  1          More than one subgraph is not supported
+CONCATENATION                  1          Operation is otherwise supported, but not mapped due to some unspecified limitation
+DEPTHWISE_CONV_2D              37         Mapped to Edge TPU
+DEPTHWISE_CONV_2D              14         More than one subgraph is not supported
