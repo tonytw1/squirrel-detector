@@ -1,0 +1,16 @@
+Edge TPU Compiler version 16.0.384591198
+Input: models/squirrelnet_ssd_mobilenet_v2_320x320_coco17_tpu-8/tflite/squirrelnet-normalised.tflite
+Output: models/squirrelnet_ssd_mobilenet_v2_320x320_coco17_tpu-8/edgetpu/squirrelnet-normalised_edgetpu.tflite
+
+Operator                       Count      Status
+
+LOGISTIC                       1          Mapped to Edge TPU
+QUANTIZE                       8          Operation is otherwise supported, but not mapped due to some unspecified limitation
+QUANTIZE                       1          Mapped to Edge TPU
+DEQUANTIZE                     2          Operation is working on an unsupported data type
+CONV_2D                        55         Mapped to Edge TPU
+DEPTHWISE_CONV_2D              17         Mapped to Edge TPU
+CONCATENATION                  2          Mapped to Edge TPU
+RESHAPE                        13         Mapped to Edge TPU
+ADD                            10         Mapped to Edge TPU
+CUSTOM                         1          Operation is working on an unsupported data type

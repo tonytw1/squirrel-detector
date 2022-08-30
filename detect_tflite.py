@@ -11,7 +11,7 @@ image = PIL.Image.open(image_file)
 import tensorflow as tf
 
 # Load the tflite model into an interpreter
-interpreter = tf.lite.Interpreter(model_path = 'models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/tflite/squirrelnet-normalised.tflite')
+interpreter = tf.lite.Interpreter(model_path = 'models/squirrelnet_ssd_mobilenet_v2_320x320_coco17_tpu-8/tflite/squirrelnet-normalised.tflite')
 interpreter.allocate_tensors()
 print("Interpreter input details")
 print(interpreter.get_input_details())

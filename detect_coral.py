@@ -14,7 +14,7 @@ image_file = sys.argv[1]
 image = PIL.Image.open(image_file)
 
 # Load the tflite model into an interpreter
-interpreter = make_interpreter('models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/edgetpu/squirrelnet-normalised_edgetpu.tflite')
+interpreter = make_interpreter('models/squirrelnet_ssd_mobilenet_v2_320x320_coco17_tpu-8/edgetpu/squirrelnet-normalised_edgetpu.tflite')
 interpreter.allocate_tensors()
 print("Interpreter input details")
 print(interpreter.get_input_details())
