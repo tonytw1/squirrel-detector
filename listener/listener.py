@@ -62,7 +62,7 @@ last_sent = 0
 # Load the model
 logging.info("Loading model")
 saved_model = tf.saved_model.load(
-    './models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/saved_model/')
+    './models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/saved_model/')
 model = saved_model.signatures['serving_default']
 logging.info("Model loaded")
 
