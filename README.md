@@ -118,11 +118,11 @@ If we can find an Object detecton API which can identify squirrels, we'll be don
 
 ### Google Vision
 
-Google Vision seems to be the gold standard for object detection and has a nice python API.
+[Google Vision](https://cloud.google.com/vision) seems to be the gold standard for object detection and has a nice python API.
 
 It also seems to know about squirrels.
 
-Here's a script to detect objects an image file and it's sample output:
+Here's a script to detect objects in an image file and it's sample output:
 
 [google-vision.py](google-vision.py)
 
@@ -133,27 +133,26 @@ Google Vision clearly knows about squirrels.
 
 ### Local alternatives?
 
-The free tier for Google Vision is less suited for continuous use.
+Google Vision's free tier is less suited for continuous use.
 
-Is there anything we can run locally?
+Is there something we can run locally?
 
 Pretrained TensorFlow object detection models are available and running one locally might be an interesting side quest.
 
 There are 2 interesting problems here. Can we find a model which can detect the objects we're interested in (squirrels) 
 and can we easily run it and call it locally?
 
-The model will need to be wrapped in some sort of API so we can call it from our own code.
+The model will need to be wrapped in some sort of API so that we can call it from our own code.
 
 
 ## TensorFlow object detection models
 
 The [TensorFlow Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
-contains saved models have been pretrained and can be downloaded.
+contains pretrained models which can be downloaded.
 
 They can be used to run detections against our images.
 
 Let's pick a pretrained model and try to run it against one of our test images.
-
 
 
 ### Object Detection API
@@ -166,7 +165,6 @@ seem to have suffered from python and CUDA dependency rot.
 Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
 
 My attempts at working around this are documented in this Dockerfile: [retraining/Dockerfile](retraining/Dockerfile).
-
 
 
 
@@ -271,7 +269,7 @@ We'll need to spike out a way to use the labels file to resolve readable names f
 [labels/labels.py](labels/labels.py)
 
 
-### Premature oroductionisation
+### Premature productionisation
 
 We've now verified that we can use TensorFlow to run a pretrained model locally.
 
@@ -515,13 +513,13 @@ I0525 09:57:42.750132 140193608288064 model_lib_v2.py:680] Step 10400 per-step t
 
 ### Exporting the model
 
-After training we can export a saved model.
+After training, we can export a TensorFlow saved model.
 
 [retraining/export.bash](retraining/export.bash)
 
 The exported model is output as a ~40Mb folder containing a protobuf representation of the model and it's training state.
 
-[serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8](serving/models/squirrelnet_ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8)
+[models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8](models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8)
 
 This is quite remarkable; we've been given a set of files which knows how to detect animals.
 
