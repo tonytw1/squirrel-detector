@@ -625,6 +625,8 @@ After training on ~800 images with 5 classes the model gave some surprisingly go
 
 Separation of the classes was very good. Most detections with > 90% confidence were correct.
 
+![Detected squirrel](images/detected_squirrel.jpg)
+
 ![Detected fox](images/detected_fox.jpg)
 
 ![Detected fox](images/detected_fox2.jpg)
