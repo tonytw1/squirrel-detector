@@ -242,7 +242,7 @@ def on_message(client, userdata, msg):
         motion_y1 = int(motion_center_y - (motion_height / 2))
         motion_y2 = int(motion_center_y + (motion_height / 2))
 
-        motion = numpy.array(x1, y1, x2, y2)
+        motion = [x1, y1, x2, y2]
         annotated_image_byte_arr = annotateImage(prediction, image, motion)
 
         # Publish notifications for strong class detections and find the max detection strength
