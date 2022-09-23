@@ -257,8 +257,7 @@ def on_message(client, userdata, msg):
         t.start()
 
     except Exception as e:
-        print("Could not process message", e)
-        logging.error("Could not process message", e)
+        logging.exception("Could not process message", e)
 
 client = mqtt.Client()
 client.on_connect = on_connect
