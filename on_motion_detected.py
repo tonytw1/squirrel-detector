@@ -4,8 +4,8 @@ import os
 import subprocess
 import json
 
-# Capture calls from Motion's on_picture_save event and publishes them to a MQTT topic
-# in JSON format with the image base64 encoded.
+# Capture calls from Motion's on_picture_save event and publishes them to a MQTT topic in JSON format with the image base64 encoded.
+# sys.argv includes the name of the script file; hence parameters are 1 indexed.
 num_argv = len(sys.argv)
 if num_argv >=4:
 	# Image filepath and dimensions have been pass to us
@@ -19,7 +19,7 @@ if num_argv >=4:
 		message = {
 			'image_filename': image_filename,
 			'image_width': sys.argv[2],
-            'image_height': sys.argv[3],
+			'image_height': sys.argv[3],
 			'image': image
 		}
 
