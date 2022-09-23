@@ -1,20 +1,21 @@
 #!/usr/bin/python3
 
-# Listens for motion detected messages on an MQTT topic
-# The motion message has a JSON body:
+# Listens for motion messages on the motion MQTT topic
+#
+# The motion messages have this JSON body:
 # {
 #   'image': BASE64 encoded JPEG
-#   'image_file': Original path to the image file on camera device
+#   'image_filename': Filename of the original image file on camera device
 # }
 #
-# Foreach motion message run TensorFlow object detection and publish the highest class scores
+# Foreach motion message run TensorFlow object detection and publish a message onto the detections MQTT topic
 # {
-#   'detections': {} # Map of class detection scoress
-#   'image': BASE64 encoded JPEG
+#   'detections': Map of class detection scores
+#   'image': BASE64 encoded original JPEG image
+#   'annotated_image': BASE64 encoded annotated JPEG image,
+#   'duration': Detection duration in ms,
+#   'image_filename': Image filename
 # }
-#
-# onto another MQTT detections topic
-# If the detection score is high enough send a notification (email) showing the detection.
 
 import tensorflow as tf
 import paho.mqtt.client as mqtt

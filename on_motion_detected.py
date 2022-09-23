@@ -17,10 +17,10 @@ if num_argv >=4:
 		image = result.stdout.decode('utf-8')
 		image_filename = os.path.split(image_filepath)[1]
 		message = {
+            'image': image,
 			'image_filename': image_filename,
 			'image_width': sys.argv[2],
-			'image_height': sys.argv[3],
-			'image': image
+			'image_height': sys.argv[3]
 		}
 
 		if (num_argv == 8):

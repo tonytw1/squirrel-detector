@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# Listens for messages on the detections MQTT topic
+# Sends email and slack notifications for qualifying detections.
+
 import paho.mqtt.client as mqtt
 
 from io import BytesIO
