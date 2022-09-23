@@ -131,7 +131,7 @@ def send_zeros():
         send_detection_message(zeros, None, None, None, None)
 
 
-def annotateImage(prediction, image, image_np):
+def annotateImage(prediction, image, image_np, motion):
     # Given a prediction and the numpy image
     # annotate that image with a bounding box for the best prediction
     # Returns a JPEG byte array
@@ -139,13 +139,26 @@ def annotateImage(prediction, image, image_np):
     detection_scores = prediction['detection_scores'].numpy().tolist()[0]
     detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
-    detection_box = detection_boxes[0][0]
-
-    image_with_detections = image_np
-
     width, height = image.size
     green = (0, 255, 0)
+    white = (255, 255, 255)
 
+    image_with_motion = image_np
+    x1 = motion[0]
+    y1 = motion[1]
+    x2 = motion[2]
+    y2 = motion[3]
+
+    image_with_motion = cv2.rectangle(
+       image_with_motion,
+       (x1, y1),
+       (x2, y2),
+       white,
+       1
+    )
+
+    image_with_detections = image_with_motion
+    detection_box = detection_boxes[0][0]
     y1 = int(height * detection_box[0])
     x1 = int(width * detection_box[1])
     y2 = int(height * detection_box[2])
@@ -215,7 +228,19 @@ def on_message(client, userdata, msg):
             if s > i:
                 detections[key] = s
 
-        annotated_image_byte_arr = annotateImage(prediction, image, image_np)
+
+        motion_center_x = message['bounding_box_center_x']
+        motion_center_y = message['bounding_box_center_y']
+        motion_width = message['bounding_box_width']
+        motion_height = message['bounding_box_height']
+
+        motion_x1 = int(motion_center_x - (motion_width / 2))
+        motion_x2 = int(motion_center_x + (motion_width / 2))
+        motion_y1 = int(motion_center_y - (motion_height / 2))
+        motion_y2 = int(motion_center_y + (motion_height / 2))
+
+        motion = numpy.array(x1, y1, x2, y2)
+        annotated_image_byte_arr = annotateImage(prediction, image, motion)
 
         # Publish notifications for strong class detections and find the max detection strength
         base64_annotated_image = base64.b64encode(
