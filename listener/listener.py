@@ -171,8 +171,7 @@ def annotateImage(prediction, image, image_np, motion):
         3
     )
 
-    detection_label = "{0} {1}".format(
-        labels[detection_classes[0]], detection_scores[0])
+    detection_label = "{0} {1}".format(labels[detection_classes[0]], round(detection_scores[0], 2))
     label_padding = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(
