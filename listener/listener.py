@@ -232,10 +232,10 @@ def on_message(client, userdata, msg):
                 detections[key] = s
 
 
-        motion_center_x = message['bounding_box_center_x']
-        motion_center_y = message['bounding_box_center_y']
-        motion_width = message['bounding_box_width']
-        motion_height = message['bounding_box_height']
+        motion_center_x = int(message['bounding_box_center_x'])
+        motion_center_y = int(message['bounding_box_center_y'])
+        motion_width = int(message['bounding_box_width'])
+        motion_height = int(message['bounding_box_height'])
 
         motion_x1 = int(motion_center_x - (motion_width / 2))
         motion_x2 = int(motion_center_x + (motion_width / 2))
