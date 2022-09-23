@@ -196,16 +196,19 @@ def annotateImage(prediction, image, image_np, motion):
 def on_message(client, userdata, msg):
     global last_detection
     global last_sent
-    logging.info("Message received from topic: " + msg.topic)
-    message = json.loads(msg.payload)
-    logging.info("Motion event found: " + message['image_file'])
-    last_detection = time.time()
 
-    # Decode the image payload
-    base64_image = message['image']
     try:
-        image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
+        logging.info("Message received from topic: " + msg.topic)
+        message = json.loads(msg.payload)
         image_filename = message['image_filename']
+
+        logging.info("Motion event found: " + image_filename)
+        last_detection = time.time()
+
+        # Decode the image payload
+        base64_image = message['image']
+
+        image = PIL.Image.open(BytesIO(base64.b64decode(base64_image)))
         image_np = numpy.array(image)
 
         start = time.time()
@@ -253,8 +256,8 @@ def on_message(client, userdata, msg):
         t = threading.Timer(30, send_zeros)
         t.start()
 
-    except:
-        println("Could not process message")
+    except Exception as e:
+        println("Could not process message", e)
 
 client = mqtt.Client()
 client.on_connect = on_connect
