@@ -231,7 +231,7 @@ def on_message(client, userdata, msg):
             if s > i:
                 detections[key] = s
 
-
+        # TODO null safe this block
         motion_center_x = int(message['bounding_box_center_x'])
         motion_center_y = int(message['bounding_box_center_y'])
         motion_width = int(message['bounding_box_width'])
