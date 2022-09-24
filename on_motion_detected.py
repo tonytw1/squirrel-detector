@@ -25,10 +25,14 @@ if num_argv >=4:
 
 		if (num_argv == 8):
 			# A bounding box was also been past to us
-			message['bounding_box_center_x'] = sys.argv[4]
-			message['bounding_box_center_y'] = sys.argv[5]
-			message['bounding_box_width'] = sys.argv[6]
-			message['bounding_box_height'] = sys.argv[7]
+			motion = {
+				'bounding_box_center_x': sys.argv[4],
+				'bounding_box_center_y': sys.argv[5],
+				'bounding_box_width': sys.argv[6],
+				'bounding_box_height': sys.argv[7]
+			}
+			message['motion'] = motion
+		}
 
 		# Publish to mqtt topic in json format. Stream the message through stdin to avoid argument size limits
 		mosquitto = subprocess.Popen(['mosquitto_pub', '-s', '-t', 'motion'], stdin=subprocess.PIPE)

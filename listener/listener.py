@@ -6,6 +6,7 @@
 # {
 #   'image': BASE64 encoded JPEG
 #   'image_filename': Filename of the original image file on camera device
+#   'motion': Optional bounding box for motion area which triggered this event
 # }
 #
 # Foreach motion message run TensorFlow object detection and publish a message onto the detections MQTT topic
@@ -145,18 +146,20 @@ def annotateImage(prediction, image, image_np, motion):
     white = (255, 255, 255)
 
     image_with_motion = image_np
-    x1 = motion[0]
-    y1 = motion[1]
-    x2 = motion[2]
-    y2 = motion[3]
 
-    image_with_motion = cv2.rectangle(
-       image_with_motion,
-       (x1, y1),
-       (x2, y2),
-       white,
-       1
-    )
+    if motion:
+	    x1 = motion[0]
+	    y1 = motion[1]
+	    x2 = motion[2]
+    	y2 = motion[3]
+
+	image_with_motion = cv2.rectangle(
+       		image_with_motion,
+       		(x1, y1),
+       		(x2, y2),
+       		white,
+       		1
+    	)
 
     image_with_detections = image_with_motion
     detection_box = detection_boxes[0][0]
@@ -231,18 +234,21 @@ def on_message(client, userdata, msg):
             if s > i:
                 detections[key] = s
 
-        # TODO null safe this block
-        motion_center_x = int(message['bounding_box_center_x'])
-        motion_center_y = int(message['bounding_box_center_y'])
-        motion_width = int(message['bounding_box_width'])
-        motion_height = int(message['bounding_box_height'])
+        motion = None
+        if 'motion' in message:
+		motion = message['motion']
+	        motion_center_x = int(motion['bounding_box_center_x'])
+        	motion_center_y = int(motion['bounding_box_center_y'])
+        	motion_width = int(motion['bounding_box_width'])
+        	motion_height = int(motion['bounding_box_height'])
 
-        motion_x1 = int(motion_center_x - (motion_width / 2))
-        motion_x2 = int(motion_center_x + (motion_width / 2))
-        motion_y1 = int(motion_center_y - (motion_height / 2))
-        motion_y2 = int(motion_center_y + (motion_height / 2))
+	        motion_x1 = int(motion_center_x - (motion_width / 2))
+		motion_x2 = int(motion_center_x + (motion_width / 2))
+        	motion_y1 = int(motion_center_y - (motion_height / 2))
+        	motion_y2 = int(motion_center_y + (motion_height / 2))
 
-        motion = [motion_x1, motion_y1, motion_x2, motion_y2]
+		motion = [motion_x1, motion_y1, motion_x2, motion_y2]
+
         annotated_image_byte_arr = annotateImage(prediction, image, image_np, motion)
 
         # Publish notifications for strong class detections and find the max detection strength
