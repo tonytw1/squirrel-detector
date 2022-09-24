@@ -42,7 +42,9 @@ from six import string_types
 
 import logging
 import sys
-logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+
+logging.basicConfig(stream=sys.stdout,
+                    level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s')
 
 logging.info("Importing TensorFlow")
@@ -64,9 +66,11 @@ last_sent = 0
 # Load the model
 logging.info("Loading model")
 saved_model = tf.saved_model.load(
-    './models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/saved_model/')
+    './models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/saved_model/'
+)
 model = saved_model.signatures['serving_default']
 logging.info("Model loaded")
+
 
 # Parse a labels protobuf file into a python map
 # Adapted from retrain/models/research/object_detection/utils/label_map_util.py
@@ -88,6 +92,7 @@ def get_labels(label_map_path):
         label_map_dict[item.id] = item.name
     return label_map_dict
 
+
 # Given a PIL image call TensorFlow to detect objects
 
 
@@ -100,7 +105,7 @@ def predict_tf(image_np):
 
 
 def on_connect(client, userdata, flags, rc):
-    logging.info("Connected with result code "+str(rc))
+    logging.info("Connected with result code " + str(rc))
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(topic)
@@ -109,7 +114,8 @@ def on_connect(client, userdata, flags, rc):
 labels = get_labels(label_file)
 
 
-def send_detection_message(detections, image, annotated_image, duration, image_filename):
+def send_detection_message(detections, image, annotated_image, duration,
+                           image_filename):
     message = {
         'detections': detections,
         'image': image,
@@ -148,18 +154,13 @@ def annotateImage(prediction, image, image_np, motion):
     image_with_motion = image_np
 
     if motion:
-	    x1 = motion[0]
-	    y1 = motion[1]
-	    x2 = motion[2]
-	    y2 = motion[3]
+        x1 = motion[0]
+        y1 = motion[1]
+        x2 = motion[2]
+        y2 = motion[3]
 
-	image_with_motion = cv2.rectangle(
-       		image_with_motion,
-       		(x1, y1),
-       		(x2, y2),
-       		white,
-       		1
-    	)
+        image_with_motion = cv2.rectangle(image_with_motion, (x1, y1),
+                                          (x2, y2), white, 1)
 
     image_with_detections = image_with_motion
     detection_box = detection_boxes[0][0]
@@ -167,27 +168,15 @@ def annotateImage(prediction, image, image_np, motion):
     x1 = int(width * detection_box[1])
     y2 = int(height * detection_box[2])
     x2 = int(width * detection_box[3])
-    image_with_detections = cv2.rectangle(
-        image_with_detections,
-        (x1, y1),
-        (x2, y2),
-        green,
-        3
-    )
+    image_with_detections = cv2.rectangle(image_with_detections, (x1, y1),
+                                          (x2, y2), green, 3)
 
-    detection_label = "{0} {1}".format(labels[detection_classes[0]], round(detection_scores[0], 2))
+    detection_label = "{0} {1}".format(labels[detection_classes[0]],
+                                       round(detection_scores[0], 2))
     label_padding = 5
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(
-        image_with_detections,
-        detection_label,
-        (x1, y1 - label_padding),
-        font,
-        0.5,
-        green,
-        1,
-        cv2.LINE_AA
-    )
+    cv2.putText(image_with_detections, detection_label,
+                (x1, y1 - label_padding), font, 0.5, green, 1, cv2.LINE_AA)
 
     image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
 
@@ -195,6 +184,7 @@ def annotateImage(prediction, image, image_np, motion):
     image_with_detections_pil.save(img_byte_arr, format='JPEG')
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
+
 
 def on_message(client, userdata, msg):
     global last_detection
@@ -236,26 +226,28 @@ def on_message(client, userdata, msg):
 
         motion = None
         if 'motion' in message:
-		motion = message['motion']
-	        motion_center_x = int(motion['bounding_box_center_x'])
-        	motion_center_y = int(motion['bounding_box_center_y'])
-        	motion_width = int(motion['bounding_box_width'])
-        	motion_height = int(motion['bounding_box_height'])
+            motion = message['motion']
+            motion_center_x = int(motion['bounding_box_center_x'])
+            motion_center_y = int(motion['bounding_box_center_y'])
+            motion_width = int(motion['bounding_box_width'])
+            motion_height = int(motion['bounding_box_height'])
 
-	        motion_x1 = int(motion_center_x - (motion_width / 2))
-		motion_x2 = int(motion_center_x + (motion_width / 2))
-        	motion_y1 = int(motion_center_y - (motion_height / 2))
-        	motion_y2 = int(motion_center_y + (motion_height / 2))
+            motion_x1 = int(motion_center_x - (motion_width / 2))
+            motion_x2 = int(motion_center_x + (motion_width / 2))
+            motion_y1 = int(motion_center_y - (motion_height / 2))
+            motion_y2 = int(motion_center_y + (motion_height / 2))
 
-		motion = [motion_x1, motion_y1, motion_x2, motion_y2]
+            motion = [motion_x1, motion_y1, motion_x2, motion_y2]
 
-        annotated_image_byte_arr = annotateImage(prediction, image, image_np, motion)
+        annotated_image_byte_arr = annotateImage(prediction, image, image_np,
+                                                 motion)
 
         # Publish notifications for strong class detections and find the max detection strength
         base64_annotated_image = base64.b64encode(
             annotated_image_byte_arr).decode("ascii")
         send_detection_message(detections, base64_image,
-                               base64_annotated_image, duration, image_filename)
+                               base64_annotated_image, duration,
+                               image_filename)
 
         # Schedule broadcast of a non motion message
         logging.info("Scheduling send zeros")
@@ -264,6 +256,7 @@ def on_message(client, userdata, msg):
 
     except Exception as e:
         logging.exception("Could not process message", e)
+
 
 client = mqtt.Client()
 client.on_connect = on_connect
