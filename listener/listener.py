@@ -151,7 +151,7 @@ def annotateImage(prediction, image, image_np, motion):
 	    x1 = motion[0]
 	    y1 = motion[1]
 	    x2 = motion[2]
-    	y2 = motion[3]
+	    y2 = motion[3]
 
 	image_with_motion = cv2.rectangle(
        		image_with_motion,

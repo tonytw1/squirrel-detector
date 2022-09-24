@@ -32,7 +32,6 @@ if num_argv >=4:
 				'bounding_box_height': sys.argv[7]
 			}
 			message['motion'] = motion
-		}
 
 		# Publish to mqtt topic in json format. Stream the message through stdin to avoid argument size limits
 		mosquitto = subprocess.Popen(['mosquitto_pub', '-s', '-t', 'motion'], stdin=subprocess.PIPE)
