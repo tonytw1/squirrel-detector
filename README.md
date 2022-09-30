@@ -4,11 +4,14 @@
 
 During lock down we were adopted by the squirrel who frequents our garden.
 
-Now I'd like to be notified when a squirrel is outside the window,
-so I built a Raspberry Pi webcam and trained a TensorFlow model to recognise squirrels.
+We wanted to be notified when a squirrel was outside the window,
+so I built a Raspberry Pi webcam and trained a TensorFlow model to recognise local wildlife.
 
 I learnt how to retrain an existing TensorFlow object detection model to recognise
 new objects and how to use that model from my own code.
+
+The [retrained model](models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8) can be reused to detect [various local 
+wildlife](models/squirrelnet_label_map.pbtxt) in webcam images.
 
 - [Hardware](#hardware)
 - [Detecting motion and capturing images](#detecting-motion-and-capturing-images)
@@ -17,20 +20,18 @@ new objects and how to use that model from my own code.
 - [TensorFlow object detection models](#tensorflow-object-detection-models)
 - [Testing in Google Colab](#testing-in-google-colab)
 - [Running a model with TensorFlow Serving](#running-a-model-with-tensorflow-serving)
-
 - [Retraining](#retraining)
 - [Annotating images](#annotating-images)
 - [Splitting the data](#splitting-the-data)
 - [Training](#training)
 - [Exporting the model](#exporting-the-model)
 - [Evaluating the model](#evaluating-the-model)
-- 
 - [Inference speed](#inference-speed)
 - [Tweaking the model](#tweaking-the-model)
 
 - [Putting it all together](#putting-it-all-together)
 - [Results](#results)
-
+- [Local training](#local-training)
 
 ## Hardware
 
