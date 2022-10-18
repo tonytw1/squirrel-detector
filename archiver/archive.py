@@ -55,11 +55,19 @@ def on_message(client, userdata, msg):
         logging.info("Received detections for image filename: " +
                      image_filename)
 
-        if 'annotated_image' in message and message['annotated_image'] is not None:
+        if 'image' in message and message['image'] is not None:
+            base64_image = message['image']
+            img_bytes = base64.b64decode(base64_image)
+            raw_image_path = "raw/" + image_filename
+            logging.info("Saving raw image to: " + raw_image_path)
+            upload_image(s3_bucket, raw_image_path, img_bytes)
+
+        if 'annotated_image' in message and message[
+                'annotated_image'] is not None:
             base64_image = message['annotated_image']
             img_bytes = base64.b64decode(base64_image)
             annotated_image_path = "annotated/" + image_filename
-            logging.info("Saving annotated image tp: " + annotated_image_path)
+            logging.info("Saving annotated image to: " + annotated_image_path)
             upload_image(s3_bucket, annotated_image_path, img_bytes)
 
 
