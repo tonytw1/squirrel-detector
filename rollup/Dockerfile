@@ -1,4 +1,4 @@
-FROM python
+FROM ubuntu
 
 RUN pip install boto3
 
