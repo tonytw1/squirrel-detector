@@ -1,9 +1,10 @@
 FROM ubuntu
 
-RUN pip install boto3
-
 RUN apt-get update
 RUN apt-get install -y ffmpeg
+RUN apt-get install python-pip
+
+RUN pip install boto3
 
 WORKDIR /usr/src/app
 COPY rollup/rollup.py .
