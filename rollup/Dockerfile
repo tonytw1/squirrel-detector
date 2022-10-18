@@ -2,6 +2,7 @@ FROM ubuntu
 
 RUN pip install boto3
 
+RUN apt-get update
 RUN apt-get install ffmpeg
 
 WORKDIR /usr/src/app
