@@ -1,0 +1,11 @@
+FROM python
+
+RUN pip install boto3
+
+RUN apt-get install ffmpeg
+
+WORKDIR /usr/src/app
+COPY rollup/rollup.py .
+
+CMD ["rollup.py"]
+ENTRYPOINT ["python3"]

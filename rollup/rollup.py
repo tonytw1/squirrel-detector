@@ -60,7 +60,7 @@ for file in files:
 # Invoke ffmpeg
 input_glob = "/" + str(tmp) + "/*.jpg"
 output_filename = datestamp + ".mp4"
-output_path = tmp + "/ " + datestamp + ".mp4"
+output_path = tmp + "/" + datestamp + ".mp4"
 logging.info("ffmpeg rendering to: " + output_path)
 subprocess.call(["ffmpeg", "-framerate", "10", "-pattern_type", "glob", "-i", input_glob, output_path])
 
