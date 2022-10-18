@@ -2,7 +2,7 @@ FROM ubuntu
 
 RUN apt-get update
 RUN apt-get install -y ffmpeg
-RUN apt-get install python-pip
+RUN apt-get install -y python-pip
 
 RUN pip install boto3
 
