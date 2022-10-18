@@ -50,12 +50,12 @@ def on_message(client, userdata, msg):
     logging.info("Message received from topic: " + msg.topic)
     message = json.loads(msg.payload)
 
-    if 'image_filename' in message & message['image_filename'] != null:
+    if 'image_filename' in message and message['image_filename'] is not None:
         image_filename = message['image_filename']
         logging.info("Received detections for image filename: " +
                      image_filename)
 
-        if 'annotated_image' in message & message['annotated_image'] != null:
+        if 'annotated_image' in message and message['annotated_image'] is not None:
             base64_image = message['annotated_image']
             img_bytes = base64.b64decode(base64_image)
             annotated_image_path = "annotated/" + image_filename
