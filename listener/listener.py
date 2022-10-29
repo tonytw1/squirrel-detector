@@ -143,43 +143,47 @@ def annotateImage(prediction, image, image_np, motion):
     # Given a prediction and the numpy image
     # annotate that image with a bounding box for the best prediction
     # Returns a JPEG byte array
-    detection_boxes = prediction['detection_boxes'].numpy().tolist()
-    detection_scores = prediction['detection_scores'].numpy().tolist()[0]
-    detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
     width, height = image.size
-    green = (0, 255, 0)
-    white = (255, 255, 255)
 
+    # Annotate with motion box if available
     image_with_motion = image_np
-
     if motion:
         x1 = motion[0]
         y1 = motion[1]
         x2 = motion[2]
         y2 = motion[3]
 
+        white = (255, 255, 255)
         image_with_motion = cv2.rectangle(image_with_motion, (x1, y1),
                                           (x2, y2), white, 1)
 
+    # Annotate with detection boxes
     image_with_detections = image_with_motion
-    detection_box = detection_boxes[0][0]
-    y1 = int(height * detection_box[0])
-    x1 = int(width * detection_box[1])
-    y2 = int(height * detection_box[2])
-    x2 = int(width * detection_box[3])
-    image_with_detections = cv2.rectangle(image_with_detections, (x1, y1),
-                                          (x2, y2), green, 3)
 
-    detection_label = "{0} {1}".format(labels[detection_classes[0]],
-                                       round(detection_scores[0], 4))
-    label_padding = 5
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(image_with_detections, detection_label,
-                (x1, y1 - label_padding), font, 0.5, green, 1, cv2.LINE_AA)
+    detection_boxes = prediction['detection_boxes'].numpy().tolist()[0]
+    detection_scores = prediction['detection_scores'].numpy().tolist()[0]
+    detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
+    for i in range(0, length(detection_boxes)):
+        detection_box = detection_boxes[i]
+        y1 = int(height * detection_box[0])
+        x1 = int(width * detection_box[1])
+        y2 = int(height * detection_box[2])
+        x2 = int(width * detection_box[3])
+        green = (0, 255, 0)
+        image_with_detections = cv2.rectangle(image_with_detections, (x1, y1),
+                                              (x2, y2), green, 3)
+
+        detection_label = "{0} {1}".format(labels[detection_classes[0]],
+                                           round(detection_scores[0], 4))
+        label_padding = 5
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(image_with_detections, detection_label,
+                    (x1, y1 - label_padding), font, 0.5, green, 1, cv2.LINE_AA)
+
+    # Convert back to A PIL image for output to jpeg
     image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
-
     img_byte_arr = io.BytesIO()
     image_with_detections_pil.save(img_byte_arr, format='JPEG')
     img_byte_arr = img_byte_arr.getvalue()
