@@ -96,8 +96,6 @@ def get_labels(label_map_path):
 
 
 # Given a PIL image call TensorFlow to detect objects
-
-
 def predict_tf(image_np):
     input_tensor = tf.convert_to_tensor(image_np)
     input_tensor = input_tensor[tf.newaxis, ...]
@@ -169,7 +167,7 @@ def annotateImage(prediction, image, image_np, motion):
 
     red = Color("red")
     blue = Color("blue")
-    colours = red.range_to(blue, len(labels.values()))
+    colours = list(red.range_to(blue, len(labels.values())))
 
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
@@ -182,17 +180,21 @@ def annotateImage(prediction, image, image_np, motion):
             y2 = int(height * detection_box[2])
             x2 = int(width * detection_box[3])
 
-            colour = colours[detection_class - 1]
+            x = int(detection_class) - 1
+            colour = colours[x]
+            rgb_colour = colour.rgb
+            rgb_colour = list(map(lambda i: int(i) * 255, rgb_colour))
+
             image_with_detections = cv2.rectangle(image_with_detections,
                                                   (x1, y1), (x2, y2),
-                                                  colour.rgb, 3)
+                                                  rgb_colour, 3)
 
             detection_label = "{0} {1}".format(labels[detection_class],
                                                round(detection_score, 4))
             label_padding = 5
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(image_with_detections, detection_label,
-                        (x1, y1 - label_padding), font, 0.5, colour,rgb, 1,
+                        (x1, y1 - label_padding), font, 0.5, rgb_colour, 1,
                         cv2.LINE_AA)
 
     # Convert back to A PIL image for output to jpeg
@@ -225,12 +227,8 @@ def on_message(client, userdata, msg):
         prediction = predict_tf(image_np)
         duration = time.time() - start
         logging.info("Prediction took: {0}".format(duration))
-        detection_scores = prediction['detection_scores'].numpy().tolist()[0]
         detection_classes = prediction['detection_classes'].numpy().tolist()[0]
-
-        # Merge detection class with scores
-        detected_classes = numpy.array(
-            list(zip(detection_classes, detection_scores)))
+        detection_scores = prediction['detection_scores'].numpy().tolist()[0]
 
         detections = defaultdict(lambda: 0)
         for i in range(0, len(detection_scores)):
@@ -272,7 +270,6 @@ def on_message(client, userdata, msg):
         t.start()
 
     except Exception as e:
-        logging.info("Could not process message")
         logging.exception("Could not process message", e)
 
 
