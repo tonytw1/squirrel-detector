@@ -43,6 +43,8 @@ from six import string_types
 import logging
 import sys
 
+from colour import Color
+
 logging.basicConfig(stream=sys.stdout,
                     level=logging.INFO,
                     format='%(asctime)s %(levelname)-8s %(message)s')
@@ -165,6 +167,10 @@ def annotateImage(prediction, image, image_np, motion):
     detection_scores = prediction['detection_scores'].numpy().tolist()[0]
     detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
+    red = Color("red")
+    blue = Color("blue")
+    colours = red.range_to(blue, len(labels.values()))
+
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
         detection_class = detection_classes[i]
@@ -175,9 +181,11 @@ def annotateImage(prediction, image, image_np, motion):
             x1 = int(width * detection_box[1])
             y2 = int(height * detection_box[2])
             x2 = int(width * detection_box[3])
-            green = (0, 255, 0)
+
+            colour = colours[detection_class - 1]
             image_with_detections = cv2.rectangle(image_with_detections,
-                                                  (x1, y1), (x2, y2), green, 3)
+                                                  (x1, y1), (x2, y2),
+                                                  colour.rgb, 3)
 
             detection_label = "{0} {1}".format(labels[detection_class],
                                                round(detection_score, 4))

@@ -9,6 +9,7 @@ RUN pip install pillow
 RUN pip install requests
 RUN pip install protobuf
 RUN pip install opencv-python
+RUN pip install colour
 
 WORKDIR /usr/src/app
 COPY ./models/ ./models/
