@@ -168,7 +168,7 @@ def annotateImage(prediction, image, image_np, motion):
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
         detection_class = detection_classes[i]
-        detection_score = detection_score[i]
+        detection_score = detection_scores[i]
 
         if (detection_score > 0.90):
             y1 = int(height * detection_box[0])
