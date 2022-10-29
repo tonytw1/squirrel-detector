@@ -165,7 +165,7 @@ def annotateImage(prediction, image, image_np, motion):
     detection_scores = prediction['detection_scores'].numpy().tolist()[0]
     detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
-    for i in range(0, length(detection_boxes)):
+    for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
         detection_class = detection_classes[i]
         detection_score = detection_score[i]
