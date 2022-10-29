@@ -272,6 +272,7 @@ def on_message(client, userdata, msg):
         t.start()
 
     except Exception as e:
+        logging.info("Could not process message")
         logging.exception("Could not process message", e)
 
 
