@@ -167,20 +167,25 @@ def annotateImage(prediction, image, image_np, motion):
 
     for i in range(0, length(detection_boxes)):
         detection_box = detection_boxes[i]
-        y1 = int(height * detection_box[0])
-        x1 = int(width * detection_box[1])
-        y2 = int(height * detection_box[2])
-        x2 = int(width * detection_box[3])
-        green = (0, 255, 0)
-        image_with_detections = cv2.rectangle(image_with_detections, (x1, y1),
-                                              (x2, y2), green, 3)
+        detection_class = detection_classes[i]
+        detection_score = detection_score[i]
 
-        detection_label = "{0} {1}".format(labels[detection_classes[0]],
-                                           round(detection_scores[0], 4))
-        label_padding = 5
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(image_with_detections, detection_label,
-                    (x1, y1 - label_padding), font, 0.5, green, 1, cv2.LINE_AA)
+        if (detection_score > 0.90):
+            y1 = int(height * detection_box[0])
+            x1 = int(width * detection_box[1])
+            y2 = int(height * detection_box[2])
+            x2 = int(width * detection_box[3])
+            green = (0, 255, 0)
+            image_with_detections = cv2.rectangle(image_with_detections,
+                                                  (x1, y1), (x2, y2), green, 3)
+
+            detection_label = "{0} {1}".format(labels[detection_class],
+                                               round(detection_score, 4))
+            label_padding = 5
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(image_with_detections, detection_label,
+                        (x1, y1 - label_padding), font, 0.5, green, 1,
+                        cv2.LINE_AA)
 
     # Convert back to A PIL image for output to jpeg
     image_with_detections_pil = PIL.Image.fromarray(image_with_detections)
