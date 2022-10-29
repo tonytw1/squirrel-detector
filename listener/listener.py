@@ -192,7 +192,7 @@ def annotateImage(prediction, image, image_np, motion):
             label_padding = 5
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(image_with_detections, detection_label,
-                        (x1, y1 - label_padding), font, 0.5, green, 1,
+                        (x1, y1 - label_padding), font, 0.5, colour,rgb, 1,
                         cv2.LINE_AA)
 
     # Convert back to A PIL image for output to jpeg
