@@ -112,6 +112,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 labels = get_labels(label_file)
+colours = list(Color("red").range_to(Color("blue"), len(labels.values())))
 
 
 def send_detection_message(detections, image, annotated_image, duration,
@@ -165,10 +166,6 @@ def annotateImage(prediction, image, image_np, motion):
     detection_scores = prediction['detection_scores'].numpy().tolist()[0]
     detection_classes = prediction['detection_classes'].numpy().tolist()[0]
 
-    red = Color("red")
-    blue = Color("blue")
-    colours = list(red.range_to(blue, len(labels.values())))
-
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
         detection_class = detection_classes[i]
@@ -182,8 +179,7 @@ def annotateImage(prediction, image, image_np, motion):
 
             x = int(detection_class) - 1
             colour = colours[x]
-            rgb_colour = colour.rgb
-            rgb_colour = list(map(lambda i: int(i) * 255, rgb_colour))
+            rgb_colour = list(map(lambda i: int(i) * 255, colour.rgb))
 
             image_with_detections = cv2.rectangle(image_with_detections,
                                                   (x1, y1), (x2, y2),
