@@ -142,7 +142,7 @@ def send_zeros():
 
 def annotateImage(prediction, image, image_np, motion):
     # Given a prediction and the numpy image
-    # annotate that image with a bounding box for the best prediction
+    # annotate that image with a bounding box for each confident prediction
     # Returns a JPEG byte array
 
     width, height = image.size
@@ -162,9 +162,10 @@ def annotateImage(prediction, image, image_np, motion):
     # Annotate with detection boxes
     image_with_detections = image_with_motion
 
-    detection_boxes = prediction['detection_boxes'].numpy().tolist()[0]
-    detection_scores = prediction['detection_scores'].numpy().tolist()[0]
-    detection_classes = prediction['detection_classes'].numpy().tolist()[0]
+    # Reverse to paint the most confident prediction on top of the less confident ones
+    detection_boxes = prediction['detection_boxes'].numpy().tolist()[0].reverse()
+    detection_scores = prediction['detection_scores'].numpy().tolist()[0].reverse()
+    detection_classes = prediction['detection_classes'].numpy().tolist()[0].reverse()
 
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
