@@ -163,9 +163,12 @@ def annotateImage(prediction, image, image_np, motion):
     image_with_detections = image_with_motion
 
     # Reverse to paint the most confident prediction on top of the less confident ones
-    detection_boxes = prediction['detection_boxes'].numpy().tolist()[0].reverse()
-    detection_scores = prediction['detection_scores'].numpy().tolist()[0].reverse()
-    detection_classes = prediction['detection_classes'].numpy().tolist()[0].reverse()
+    detection_boxes = list(
+        reversed(prediction['detection_boxes'].numpy().tolist()[0]))
+    detection_scores = list(
+        reversed(prediction['detection_scores'].numpy().tolist()[0]))
+    detection_classes = list(
+        reversed(prediction['detection_classes'].numpy().tolist()[0]))
 
     for i in range(0, len(detection_boxes)):
         detection_box = detection_boxes[i]
