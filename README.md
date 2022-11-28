@@ -16,7 +16,7 @@ wildlife](models/squirrelnet_label_map.pbtxt) in webcam images.
 - [Hardware](#hardware)
 - [Detecting motion and capturing images](#detecting-motion-and-capturing-images)
 - [Not squirrel](https://github.com/tonytw1/squirrel-detector#not-squirrel)
-§§- [Categorisation or Detection](#categorisation-or-detection)
+- [Categorisation or Detection](#categorisation-or-detection)
 - [Object detection APIs](#object-detection-apis)
 - [TensorFlow object detection models](#tensorflow-object-detection-models)
 - [Testing in Google Colab](#testing-in-google-colab)
@@ -114,12 +114,14 @@ We have a bounding box for the area of the image which is in motion and triggere
 We can choose to categorise the contains of the bounding box or try to detect all of the recognised objects in the entire image.
 
 Categorising the contents of the smaller motion area should be quicker but would depend alot on the behaviour of the bounding box.
-It could also omit results if there are multiple objects in the image. Full image object detection is probably a more useful general solution 
-as well. 
+It could also omit results if there are multiple objects in the image. 
+
+Full image object detection is probably a more general and reusable solution as well. 
 
 I initially choose object detection. In hindsight this option has worked well.
-Here are some examples of detected motion bounding boxes and full image object detection. Object detection seems todo 
-a better job of boxing the entire object with parts of it are in motion.
+
+Here are some examples of detected motion bounding boxes and full image object detection.
+Object detection seems todo a better job of boxing the entire object when parts of it are in motion.
 
 ![Motion bounding box compared to object detection result](images/motion1.jpg)
 ![Motion bounding box compared to object detection result](images/motion2.jpg)
