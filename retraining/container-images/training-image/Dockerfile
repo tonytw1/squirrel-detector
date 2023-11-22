@@ -1,5 +1,5 @@
 # Attempts to repeat the steps out lined in https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md
-FROM eelpie:ubuntu-nvidia-base-image
+FROM eelpie/ubuntu-nvidia-base-image
 
 # Python 3.7 environment and dev files
 RUN apt-get update
