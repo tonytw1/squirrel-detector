@@ -680,7 +680,7 @@ We then want to run this training image with our project and training data mount
 
 Run the training image with the detector git project mounted as a volume at /home/retraining and the training data mounted at /home/training:
 ```
-docker run -it --gpus all --name train -v '/home/tony/git/squirrel-detector:/home' -v '/home/tony/training:/home/training' -w '/home/retraining' eelpie:training bash train.bash
+docker run -it --gpus all --name train -v '/home/tony/git/squirrel-detector:/home' -v '/home/tony/training:/home/training' -w '/home/retraining' eelpie/training bash train.bash
 ```
 
 To reattach to the training container to monitor progress:
