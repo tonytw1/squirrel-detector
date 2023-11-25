@@ -9,6 +9,11 @@ RUN apt-get install -y python3-dev
 RUN apt-get install -y python3-pip
 RUN python3 -m pip install -U pip
 
+
+# Tensorflow 2.13 wants cuba 11
+RUN apt install --no-install-recommends -y cuda-11-8
+RUN pip3 install nvidia-cudnn-cu11 
+
 # Dev tools required by object detection
 RUN apt-get install -y git
 RUN apt-get install -y protobuf-compiler
