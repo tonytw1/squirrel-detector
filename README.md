@@ -663,8 +663,8 @@ The GPU drivers are a large install so we should build a Docker base image to is
 
 Build and test Nvidia base image:
 ```
-docker build -t eelpie:ubuntu-nvidia-base-image retraining/ubuntu-nvidia-base-image/
-docker run --gpus all eelpie:ubuntu-nvidia-base-image nvidia-smi
+docker build -t eelpie/ubuntu-nvidia-base-image retraining/container-images/ubuntu-nvidia-base-image/
+docker run --gpus all eelpie/ubuntu-nvidia-base-image nvidia-smi
 ```
 
 The version of the `nvidia-driver` in the Docker image must exactly match the version running on the host machine. 
@@ -673,7 +673,7 @@ We can install the TensorFlow dependencies on top of this base image to produce 
 
 Build the training image:
 ```
-docker build -t eelpie:training retraining/
+docker build -t eelpie/training retraining/container-images/training-image/
 ```
 
 We then want to run this training image with our project and training data mounted.
