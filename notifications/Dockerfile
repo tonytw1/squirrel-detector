@@ -1,6 +1,6 @@
 FROM python
 
-RUN pip install paho-mqtt
+RUN pip install paho-mqtt==1.6.1
 RUN pip install pillow
 RUN pip install requests
 RUN pip install numpy

@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y libglib2.0-0
 RUN apt-get install -y libgl1-mesa-glx
 
-RUN pip install paho-mqtt
+RUN pip install paho-mqtt==1.6.1
 RUN pip install pillow
 RUN pip install requests
 RUN pip install protobuf
