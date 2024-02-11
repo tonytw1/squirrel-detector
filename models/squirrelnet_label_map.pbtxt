@@ -26,3 +26,7 @@ item {
  id: 7
  name: 'rat'
 }
+item {
+ id: 8
+ name: 'robin'
+}
