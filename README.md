@@ -13,6 +13,30 @@ new objects and how to use that model from my own code.
 The [retrained model](models/squirrelnet_ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8) can be reused to detect [various local 
 wildlife](models/squirrelnet_label_map.pbtxt) in webcam images.
 
+
+## Quick start
+
+Got squirrels? Check your own images using this model with Python and TensorFlow:
+
+```
+pip3 install tensowflow
+pip3 install numpy
+pip3 install pillow
+git clone https://github.com/tonytw1/squirrel-detector.git
+cd squirrel-detector
+python3 check.py test-images/mostly-fox.jpg`
+```
+
+Output indicating a confident detection:
+```
+2.0: 0.9792144
+6.0: 0.119822234
+1.0: 0.09797034
+```
+
+
+## Contents
+
 - [Hardware](#hardware)
 - [Detecting motion and capturing images](#detecting-motion-and-capturing-images)
 - [Not squirrel](https://github.com/tonytw1/squirrel-detector#not-squirrel)
