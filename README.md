@@ -206,21 +206,19 @@ Let's pick a pretrained model and try to run it against one of our test images.
 
 The TensorFlow Object Detection API seems to be TensorFlow's high level wrapper around this type of problem.
 
-The [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md)
-seem to have suffered from python and CUDA dependency rot.
+The [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md) seemed to have suffered from python and CUDA dependency rot.
 
-Getting a working GPU enabled install of TensorFlow and the Object Detection API was difficult.
+Getting a working GPU enabled installations of TensorFlow and the Object Detection API was difficult.
+Recently it's much easier thanks to the GPU enabled TensorFlow base images.
 
-My attempts at working around this are documented in this Dockerfile: [retraining/Dockerfile](retraining/Dockerfile).
-
+My current object detection training environment is documented in this Dockerfile: [retraining/container-images/training-image/Dockerfile](retraining/container-images/training-image/Dockerfile).
 
 
 ### Testing in Google Colab
 
-
 Working on a local machine I was blocked almost immediately with an error while trying to load the saved model.
 
-This could be a mismatch between TensorFlow 2.5 and the available examples.
+This could have been a mismatch between TensorFlow 2.5 and the available examples.
 
 Rather than get stuck trying to resolve dependencies we can retreat to a [Google Colab](https://colab.research.google.com) notebook.
 Colab gives us a known good development environment to get started in.
