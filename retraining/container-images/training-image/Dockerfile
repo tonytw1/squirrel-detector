@@ -1,7 +1,6 @@
-# Attempts to repeat the steps out lined in https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md
 FROM docker.io/tensorflow/tensorflow:2.13.0-gpu
 
-# Python 3.7 environment and dev files
+# Dev tools
 RUN apt-get update
 RUN apt-get install -y git
 
