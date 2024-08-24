@@ -628,7 +628,7 @@ Adding this animal as a new class and retraining seems to resolve the issue.
 
 ![Seagull](seagull.png)
 
-Providing the same image as a non tagged training image may also haved worked but wasn't tried.
+Providing the same image as a non tagged training image may also have worked but wasn't tried.
 
 
 ### False positives
