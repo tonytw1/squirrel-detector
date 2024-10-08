@@ -134,9 +134,10 @@ Motion detected
     message.attach(html_part)
     message.attach(image_attachment)
 
-    server = smtplib.SMTP(smtp_server, 587)
-    server.login(smtp_user, smtp_password)
-    server.sendmail(message_from, message_to, message.as_string())
+    smtp = smtplib.SMTP(smtp_server, 587)
+    smtp.starttls()
+    smtp.login(smtp_user, smtp_password)
+    smtp.sendmail(message_from, message_to, message.as_string())
     logging.info("Sent notification: " + subject)
 
 
