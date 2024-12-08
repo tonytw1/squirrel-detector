@@ -24,16 +24,91 @@ pip3 install numpy
 pip3 install pillow
 git clone https://github.com/tonytw1/squirrel-detector.git
 cd squirrel-detector
-python3 check.py test-images/mostly-fox.jpg`
+python3 check.py test-images/*
 ```
 
-Output indicating a confident detection:
+Output indicating confident detections:
 ```
-2.0: 0.9792144
-6.0: 0.119822234
-1.0: 0.09797034
+Importing TensorFlow
+Finished importing TensorFlow
+Loading model
+Finished loading model
+Loading image test-images/double-fox.jpg
+Converting test-images/double-fox.jpg to input tensor
+Detecting in test-images/double-fox.jpg
+Detection completed for test-images/double-fox.jpg in 841.3801193237305ms
+2.0: 0.99968594
+2.0: 0.998834
+5.0: 0.032358527
+5.0: 0.02355782
+3.0: 0.0201727
+6.0: 0.017337278
+6.0: 0.01602341
+2.0: 0.015346697
+1.0: 0.013019669
+3.0: 0.010901747
+test-images/double-fox.jpg took 885.329008102417ms end to end
+Loading image test-images/double-squirrel.jpg
+Converting test-images/double-squirrel.jpg to input tensor
+Detecting in test-images/double-squirrel.jpg
+Detection completed for test-images/double-squirrel.jpg in 58.42304229736328ms
+1.0: 0.9915343
+1.0: 0.5669721
+4.0: 0.08471444
+6.0: 0.05237192
+2.0: 0.032799907
+3.0: 0.032602694
+6.0: 0.029259607
+3.0: 0.027670832
+3.0: 0.025951618
+4.0: 0.024997206
+test-images/double-squirrel.jpg took 91.85290336608887ms end to end
+Loading image test-images/mostly-fox.jpg
+Converting test-images/mostly-fox.jpg to input tensor
+Detecting in test-images/mostly-fox.jpg
+Detection completed for test-images/mostly-fox.jpg in 50.83417892456055ms
+2.0: 0.973943
+6.0: 0.6413315
+6.0: 0.15741917
+1.0: 0.10761013
+5.0: 0.054149233
+4.0: 0.05076366
+6.0: 0.017794535
+3.0: 0.015844222
+4.0: 0.015320973
+4.0: 0.015181341
+test-images/mostly-fox.jpg took 57.17110633850098ms end to end
+Loading image test-images/squirrel.jpg
+Converting test-images/squirrel.jpg to input tensor
+Detecting in test-images/squirrel.jpg
+Detection completed for test-images/squirrel.jpg in 59.5860481262207ms
+1.0: 0.9953614
+1.0: 0.02479627
+6.0: 0.01990755
+6.0: 0.016859846
+1.0: 0.016725613
+1.0: 0.014010337
+2.0: 0.013183329
+2.0: 0.013044576
+4.0: 0.0127070565
+1.0: 0.011396781
+test-images/squirrel.jpg took 92.68999099731445ms end to end
+Loading image test-images/standing-squirrel.jpg
+Converting test-images/standing-squirrel.jpg to input tensor
+Detecting in test-images/standing-squirrel.jpg
+Detection completed for test-images/standing-squirrel.jpg in 55.76896667480469ms
+1.0: 0.9933376
+6.0: 0.029534124
+2.0: 0.02659541
+6.0: 0.02409731
+1.0: 0.019093161
+6.0: 0.018654902
+1.0: 0.018603576
+1.0: 0.01789689
+1.0: 0.016497936
+1.0: 0.015996533
+test-images/standing-squirrel.jpg took 85.83402633666992ms end to end
 ```
-
 
 ## Contents
 
