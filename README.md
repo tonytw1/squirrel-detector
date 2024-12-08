@@ -27,7 +27,7 @@ cd squirrel-detector
 python3 check.py test-images/*
 ```
 
-Output indicating a confident detections:
+Output indicating confident detections:
 ```
 Importing TensorFlow
 Finished importing TensorFlow
