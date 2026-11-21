@@ -1,20 +1,24 @@
-FROM tensorflow/tensorflow:latest-gpu
+FROM tensorflow/tensorflow:2.21.0-gpu
 
-RUN apt-get update
-RUN apt-get install -y libglib2.0-0
-RUN apt-get install -y libgl1-mesa-glx
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libglib2.0-0 \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN pip install paho-mqtt==1.6.1
-RUN pip install pillow
-RUN pip install requests
-RUN pip install protobuf
-RUN pip install opencv-python
-RUN pip install colour
+# Install everything in one resolve so pip keeps TensorFlow, its CUDA libs and protobuf compatible
+RUN pip install \
+      "tensorflow[and-cuda]==2.21.0" \
+      paho-mqtt==1.6.1 \
+      pillow \
+      requests \
+      protobuf \
+      opencv-python-headless \
+      colour
 
 WORKDIR /usr/src/app
 COPY ./models/ ./models/
 COPY listener/string_int_label_map_pb2.py .
 COPY listener/listener.py .
 
-CMD ["listener.py"]
 ENTRYPOINT ["python3"]
+CMD ["listener.py"]
+
