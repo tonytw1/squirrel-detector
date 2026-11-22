@@ -7,6 +7,7 @@ RUN apt-get update \
 # Install everything in one resolve so pip keeps TensorFlow, its CUDA libs and protobuf compatible
 RUN pip install \
       "tensorflow[and-cuda]==2.21.0" \
+      "nvidia-cudnn-cu12==9.3.0.75" \
       paho-mqtt==1.6.1 \
       pillow \
       requests \
